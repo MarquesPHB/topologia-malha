@@ -321,7 +321,7 @@
         {title:'Mapa de contatos',tag:'SIMULAÇÃO 01',desc:'Comece com a rede íntegra. Compare duas conversas e observe o enlace direto entre seus computadores.',objective:'Teste PC 1 ↔ PC 2 e PC 4 ↔ PC 5.',clues:[['VIZINHANÇA','Cada computador tem uma ligação própria com os outros quatro.'],['GRAFO','O mapa tem cinco nós de usuário e dez enlaces de pares.'],['CAMINHO','O simulador escolhe a rota ativa com menos saltos.']]},
         {title:'Um enlace interrompido',tag:'SIMULAÇÃO 02',desc:'Corte uma ligação direta. Descubra se os mesmos computadores ainda conseguem trocar pacotes por uma rota alternativa.',objective:'Desative PC 1 ↔ PC 2; teste o par e confirme um caminho alternativo.',clues:[['DESVIO','Uma segunda rota pode atravessar outro computador ativo.'],['DEPENDÊNCIA','Cada enlace é independente: a falha de um não derruba os demais.'],['OBSERVE','O caminho destacado mostra quais nós e enlaces foram usados.']]},
         {title:'Um computador fora de serviço',tag:'SIMULAÇÃO 03',desc:'Um computador pode ser destino, origem ou parte de uma rota. Compare uma transmissão destinada ao equipamento desligado com outra conversa.',objective:'Desative PC 3; teste PC 1 → PC 3 e, depois, PC 1 → PC 2.',clues:[['ENDPOINT','Um computador desligado não envia nem recebe pacotes.'],['TRÂNSITO','Nós indisponíveis também não podem encaminhar uma rota.'],['ISOLAMENTO','Outros pares continuam usando os próprios enlaces ativos.']]},
-        {title:'Saída externa independente',tag:'SIMULAÇÃO 04',desc:'A função do gateway é diferente das ligações entre computadores. Confira o que acontece quando ele falha.',objective:'Reative PC 3 e PC 1 ↔ PC 2; falhe o gateway; teste a saída externa e PC 1 ↔ PC 2; restaure o gateway e teste a saída de novo.',clues:[['SEPARAÇÃO','As conversas LAN são calculadas sem incluir o gateway.'],['ESCOPO','A falha do gateway interrompe a saída externa, não os pares locais.'],['VALIDAÇÃO','Depois do reparo, um novo teste confirma o retorno da saída.']]}
+        {title:'Saída externa independente',tag:'SIMULAÇÃO 04',desc:'A função do gateway é diferente das ligações entre computadores. Confira o que acontece quando ele falha.',objective:'Falhe o gateway e teste a saída externa; enquanto ele estiver fora, envie dados entre dois PCs ativos; recupere o gateway e teste a saída externa novamente.',clues:[['SEPARAÇÃO','As conversas LAN são calculadas sem incluir o gateway.'],['ESCOPO','A falha do gateway interrompe a saída externa, não os pares locais.'],['VALIDAÇÃO','Depois do reparo, um novo teste confirma o retorno da saída.']]}
       ];
       const quizzes = [
         {question:'No mapa inicial, quantas ligações diretas chegam a cada computador?',answers:[{text:'Quatro: uma para cada outro computador.',correct:true},{text:'Duas: uma para o gateway e outra para a internet.'},{text:'Uma: todos compartilham um único enlace.'},{text:'Três: cada computador deixa um dos pares sem ligação direta.'}],why:'Isso mesmo. Com cinco computadores, cada um tem uma ligação direta com os outros quatro.'},
@@ -509,20 +509,25 @@
           if(id===pairId('PC1','PC3')&&!success)flags.pc3Blocked=true;
           if(id===pairId('PC1','PC2')&&success)flags.peerSurvives=true;
         }
-        if(current===3) {
-          if(id===pairId('PC1','PC2')&&success&&!gateway)flags.peerWithoutGateway=true;
-        }
+        if(current===3&&success&&!gateway)flags.peerWithoutGateway=true;
       }
       function missionReady() {
         if(current===0)return Boolean(flags.baseline&&flags.baseline.size>=2);
         if(current===1)return Boolean(flags.detour);
         if(current===2)return Boolean(flags.pc3Blocked&&flags.peerSurvives);
-        return Boolean(flags.pc3Restored&&flags.linkRestored&&flags.gatewayFailureTest&&flags.peerWithoutGateway&&flags.gatewayRestoredTest);
+        return Boolean(flags.gatewayFailureTest&&flags.peerWithoutGateway&&flags.gatewayRestoredTest);
       }
       function checkObjective() {
         if(!missions[current])return;
         const ready=missionReady();
-        $('objectiveStatus').textContent=ready?'Objetivo cumprido. Responda à pergunta para avançar.':$('objectiveStatus').textContent;
+        if(ready)$('objectiveStatus').textContent='Objetivo cumprido. Responda à pergunta para avançar.';
+        else if(current===3){
+          const pending=[];
+          if(!flags.gatewayFailureTest)pending.push('teste a saída com o gateway em falha');
+          if(!flags.peerWithoutGateway)pending.push('envie entre PCs enquanto o gateway estiver em falha');
+          if(!flags.gatewayRestoredTest)pending.push('recupere o gateway e teste a saída novamente');
+          $('objectiveStatus').textContent=`Falta: ${pending.join('; ')}.`;
+        }
         if(ready&&!answered)showQuiz();
       }
       function renderMission() {

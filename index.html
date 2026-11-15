@@ -324,14 +324,15 @@
         {title:'Saída externa independente',tag:'SIMULAÇÃO 04',desc:'A função do gateway é diferente das ligações entre computadores. Confira o que acontece quando ele falha.',objective:'Reative PC 3 e PC 1 ↔ PC 2; falhe o gateway; teste a saída externa e PC 1 ↔ PC 2; restaure o gateway e teste a saída de novo.',clues:[['SEPARAÇÃO','As conversas LAN são calculadas sem incluir o gateway.'],['ESCOPO','A falha do gateway interrompe a saída externa, não os pares locais.'],['VALIDAÇÃO','Depois do reparo, um novo teste confirma o retorno da saída.']]}
       ];
       const quizzes = [
-        {question:'No mapa inicial, quantas ligações diretas chegam a cada computador?',answers:['Quatro: uma para cada outro computador.','Duas: uma para o gateway e outra para a internet.','Uma: todos compartilham um único enlace.'],correct:0,why:'Isso mesmo. Com cinco computadores, cada um tem uma ligação direta com os outros quatro.'},
-        {question:'PC 1 ↔ PC 2 foi interrompida. Como ainda pode haver comunicação entre eles?',answers:['Por uma rota com outro computador ativo como intermediário.','Pelo enlace que está inativo.','Pelo gateway, que participa das rotas locais.'],correct:0,why:'Correto. O simulador procura um caminho alternativo pelo grafo de computadores; o gateway não faz parte dessa rota.'},
-        {question:'PC 3 falhou. Qual previsão combina com o modelo?',answers:['PC 1 não alcança PC 3, mas ainda pode falar com PC 2 se houver rota ativa.','A falha de PC 3 desliga automaticamente os outros quatro.','PC 3 recebe pacotes, mas não consegue enviá-los.'],correct:0,why:'Exato. O nó indisponível não pode ser origem, destino ou intermediário; os demais continuam dependendo de seus próprios caminhos.'},
-        {question:'O gateway falhou. O que continua funcionando?',answers:['As conversas entre PCs, pois o gateway não integra os caminhos LAN.','Nenhuma conexão, pois todo pacote entre PCs passa pelo gateway.','A saída externa continua ativa, mas os PCs param.'],correct:0,why:'Isso mesmo. A falha afeta a saída externa. As rotas entre computadores são calculadas somente no grafo LAN.'}
+        {question:'No mapa inicial, quantas ligações diretas chegam a cada computador?',answers:[{text:'Quatro: uma para cada outro computador.',correct:true},{text:'Duas: uma para o gateway e outra para a internet.'},{text:'Uma: todos compartilham um único enlace.'},{text:'Três: cada computador deixa um dos pares sem ligação direta.'}],why:'Isso mesmo. Com cinco computadores, cada um tem uma ligação direta com os outros quatro.'},
+        {question:'PC 1 ↔ PC 2 foi interrompida. Como ainda pode haver comunicação entre eles?',answers:[{text:'Por uma rota com outro computador ativo como intermediário.',correct:true},{text:'Pelo enlace que está inativo.'},{text:'Pelo gateway, que participa das rotas locais.'},{text:'Não há como comunicar: a falha de um enlace sempre isola os dois PCs.'}],why:'Correto. O simulador procura um caminho alternativo pelo grafo de computadores; o gateway não faz parte dessa rota.'},
+        {question:'PC 3 falhou. Qual previsão combina com o modelo?',answers:[{text:'PC 1 não alcança PC 3, mas ainda pode falar com PC 2 se houver rota ativa.',correct:true},{text:'A falha de PC 3 desliga automaticamente os outros quatro.'},{text:'PC 3 recebe pacotes, mas não consegue enviá-los.'},{text:'PC 3 pode funcionar como intermediário mesmo estando desligado.'}],why:'Exato. O nó indisponível não pode ser origem, destino ou intermediário; os demais continuam dependendo de seus próprios caminhos.'},
+        {question:'O gateway falhou. O que continua funcionando?',answers:[{text:'As conversas entre PCs, pois o gateway não integra os caminhos LAN.',correct:true},{text:'Nenhuma conexão, pois todo pacote entre PCs passa pelo gateway.'},{text:'A saída externa continua ativa, mas os PCs param.'},{text:'Só os dois computadores mais próximos do gateway continuam conectados.'}],why:'Isso mesmo. A falha afeta a saída externa. As rotas entre computadores são calculadas somente no grafo LAN.'}
       ];
       let computers, links, gateway, externalLink;
       let current=0, tests=0, answered=false, routeLinks=[], routeNodes=[], externalHighlight=false;
       let flags={}, done=[false,false,false,false], finalRevealed=false;
+      let previousCorrectPosition=-1;
       let reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
       function routeBetween(start,goal) {
@@ -537,11 +538,23 @@
         answered=true;const q=quizzes[current];$('quizQuestion').textContent=q.question;$('quizFeedback').textContent='';
         $('continueButton').hidden=true;
         const options=$('quizOptions');options.replaceChildren();
-        q.answers.forEach((answer,i)=>{
-          const b=document.createElement('button');b.type='button';b.textContent=answer;
+        const shuffled=q.answers.map(answer=>({...answer}));
+        for(let i=shuffled.length-1;i>0;i--){
+          const j=Math.floor(Math.random()*(i+1));
+          [shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];
+        }
+        let correctPosition=shuffled.findIndex(answer=>answer.correct);
+        if(correctPosition===previousCorrectPosition){
+          const alternative=shuffled.findIndex((answer,index)=>index!==correctPosition&&!answer.correct);
+          [shuffled[correctPosition],shuffled[alternative]]=[shuffled[alternative],shuffled[correctPosition]];
+          correctPosition=alternative;
+        }
+        previousCorrectPosition=correctPosition;
+        shuffled.forEach(answer=>{
+          const b=document.createElement('button');b.type='button';b.textContent=answer.text;
           b.addEventListener('click',()=>{
             if(options.dataset.locked==='true')return;
-            if(i===q.correct){options.dataset.locked='true';b.classList.add('correct');$('quizFeedback').textContent=q.why;$('continueButton').hidden=false;done[current]=true;$('phaseTag').textContent='ETAPA CONCLUÍDA';updateProgress()}
+            if(answer.correct){options.dataset.locked='true';b.classList.add('correct');$('quizFeedback').textContent=q.why;$('continueButton').hidden=false;done[current]=true;$('phaseTag').textContent='ETAPA CONCLUÍDA';updateProgress()}
             else{$('quizFeedback').textContent='Ainda não. Use as evidências do mapa e tente novamente.';b.classList.add('incorrect');setTimeout(()=>b.classList.remove('incorrect'),500)}
           });
           options.append(b);
@@ -563,7 +576,7 @@
         computers=Object.fromEntries(pcs.map(pc=>[pc,true]));
         links=Object.fromEntries(edgeIds.map(id=>[id,true]));
         gateway=true;externalLink=true;current=0;tests=0;answered=false;routeLinks=[];routeNodes=[];externalHighlight=false;
-        flags={};done=[false,false,false,false];finalRevealed=false;
+        flags={};done=[false,false,false,false];finalRevealed=false;previousCorrectPosition=-1;
         $('log').replaceChildren();log('Pronto. Inicie os testes da etapa atual.');$('finalAnswer').textContent='';
         $('quizOptions').dataset.locked='false';$('intro').hidden=false;$('game').classList.remove('started');$('complete').hidden=true;$('quiz').hidden=true;$('finalOptions').querySelectorAll('button').forEach(button=>{button.disabled=false;button.classList.remove('correct','incorrect')});
         initSelectors();renderMissions();renderMission();renderAll();updateProgress();

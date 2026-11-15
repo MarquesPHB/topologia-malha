@@ -4,134 +4,149 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#17263d">
-  <title>Operação Sinal — Laboratório de redes</title>
+  <title>Operação Sinal — Rede entre pares</title>
   <style>
     :root {
       color-scheme: light;
       --navy:#17263d; --navy2:#253d5a; --cream:#f8f4df; --paper:#fffdf1;
       --mint:#a6e7c2; --cyan:#9ce7ee; --yellow:#ffdc75; --coral:#ffb2b2;
       --ink:#1b2c43; --muted:#43566d; --line:#25364d; --shadow:#0b1422;
-      --green:#245d3b; --red-ink:#7b2525; --focus:#ff9f1c;
-      --font-scale:1;
+      --green:#245d3b; --red-ink:#7b2525; --focus:#ff9f1c; --font-scale:1;
     }
     *{box-sizing:border-box}
     html{font-size:calc(18px * var(--font-scale));scroll-behavior:smooth}
     body{margin:0;background:var(--navy);color:var(--ink);font-family:ui-rounded,"Trebuchet MS",system-ui,sans-serif;line-height:1.45}
-    button{font:inherit}
-    button,.control-card,.mission-stamp{border-radius:3px}
-    button{min-height:46px;padding:.55rem .78rem;border:3px solid var(--line);background:var(--yellow);color:var(--ink);font-weight:850;box-shadow:3px 3px 0 var(--shadow);cursor:pointer;transition:transform .12s,filter .12s}
+    button,select{font:inherit}
+    button{min-height:44px;padding:.52rem .76rem;border:3px solid var(--line);border-radius:3px;background:var(--yellow);color:var(--ink);font-weight:850;box-shadow:3px 3px 0 var(--shadow);cursor:pointer;transition:transform .12s,filter .12s}
     button:hover:not(:disabled){filter:brightness(1.04);transform:translateY(-2px)}
     button:active:not(:disabled){transform:translate(1px,1px);box-shadow:1px 1px 0 var(--shadow)}
     button:disabled{opacity:.62;cursor:not-allowed;box-shadow:none}
     :focus-visible{outline:4px solid var(--focus)!important;outline-offset:3px}
     .skip{position:absolute;z-index:20;left:12px;top:-80px;background:var(--paper);color:var(--ink);padding:10px}
     .skip:focus{top:12px}
-    .topbar{max-width:1500px;margin:auto;padding:14px 22px 10px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;color:white}
+    .topbar{max-width:1480px;margin:auto;padding:14px 22px 10px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;color:white}
     .brand{display:flex;align-items:center;gap:12px}
     .brand-mark{width:44px;height:40px;display:grid;place-items:center;background:var(--cyan);border:3px solid #fff;box-shadow:4px 4px 0 #07101e;color:var(--navy);font-size:1.25rem;font-weight:1000}
     .brand-title{margin:0;color:var(--yellow);font-size:1rem;line-height:1.1;letter-spacing:.045em;text-transform:uppercase}
     .brand-sub{display:block;color:#d9e7f2;font-size:.72rem;margin-top:3px}
     .hud{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
-    .hud-pill{border:2px solid #96abc1;background:var(--navy2);padding:6px 10px;font-size:.78rem;color:#fff;white-space:nowrap}
+    .hud-pill{border:2px solid #96abc1;background:var(--navy2);padding:6px 10px;font-size:.76rem;color:#fff;white-space:nowrap}
     .hud-pill b{color:var(--yellow)}
     .settings{display:flex;gap:6px;align-items:center}
-    .settings button{min-height:40px;padding:.35rem .58rem;background:#fff;color:var(--navy);font-size:.77rem;box-shadow:2px 2px 0 #07101e}
-    .page{max-width:1500px;margin:auto;padding:0 22px 28px}
-    .intro{background:var(--cream);border:4px solid var(--shadow);box-shadow:7px 7px 0 var(--shadow);display:grid;grid-template-columns:minmax(0,1.15fr) minmax(270px,.85fr);gap:22px;padding:clamp(20px,4vw,48px);margin:14px 0 20px;align-items:center}
-    .kicker{display:inline-block;background:var(--navy2);color:var(--mint);padding:5px 9px;border:2px solid var(--line);font-size:.72rem;font-weight:900;letter-spacing:.09em;text-transform:uppercase}
-    h1{font-size:clamp(2rem,4.4vw,4.1rem);line-height:.98;letter-spacing:-.045em;margin:14px 0;color:var(--navy)}
-    .intro-copy{max-width:680px;color:#304158;font-size:1rem}
-    .intro-copy strong{color:var(--navy)}
+    .settings button{min-height:39px;padding:.32rem .55rem;background:#fff;color:var(--navy);font-size:.73rem;box-shadow:2px 2px 0 #07101e}
+    .page{max-width:1480px;margin:auto;padding:0 22px 30px}
+    .intro{background:var(--cream);border:4px solid var(--shadow);box-shadow:7px 7px 0 var(--shadow);display:grid;grid-template-columns:minmax(0,1.15fr) minmax(270px,.85fr);gap:22px;padding:clamp(20px,4vw,46px);margin:14px 0 20px;align-items:center}
+    .kicker{display:inline-block;background:var(--navy2);color:var(--mint);padding:5px 9px;border:2px solid var(--line);font-size:.7rem;font-weight:900;letter-spacing:.09em;text-transform:uppercase}
+    h1{font-size:clamp(2rem,4.4vw,4rem);line-height:.98;letter-spacing:-.045em;margin:14px 0;color:var(--navy)}
+    .intro-copy{max-width:680px;color:#304158;font-size:.98rem}
     .brief-board{background:#e2ebd8;border:3px dashed #41664e;padding:16px;box-shadow:4px 4px 0 #a1b29d;transform:rotate(1deg)}
-    .brief-board h2{margin:0 0 8px;font-size:.98rem;color:#193e2b}
-    .brief-board ul{padding-left:1.2rem;margin:0;color:#253f31;font-size:.82rem}
+    .brief-board h2{margin:0 0 8px;font-size:.96rem;color:#193e2b}
+    .brief-board ul{padding-left:1.2rem;margin:0;color:#253f31;font-size:.8rem}
     .brief-board li+li{margin-top:5px}
     .start-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:18px}
-    .start{background:var(--mint);font-size:1rem;padding:.7rem 1rem}
-    .hint{font-size:.74rem;color:#465870}
-    .game{display:none;grid-template-columns:230px minmax(0,1fr);gap:16px;align-items:start}
+    .start{background:var(--mint);font-size:.95rem;padding:.68rem 1rem}
+    .hint{font-size:.72rem;color:#465870}
+    .game{display:none;grid-template-columns:235px minmax(0,1fr);gap:16px;align-items:start}
     .game.started{display:grid}
     .rail,.workbench{border:4px solid var(--shadow);box-shadow:6px 6px 0 var(--shadow);background:var(--cream);min-width:0}
     .rail{padding:14px;position:sticky;top:10px}
-    .rail-heading{font-size:.76rem;letter-spacing:.08em;text-transform:uppercase;color:#3d5570;margin:0 0 11px}
+    .rail-heading{font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;color:#3d5570;margin:0 0 11px}
     .mission-list{display:grid;gap:8px}
-    .mission-chip{display:grid;grid-template-columns:34px 1fr;gap:8px;align-items:center;border:2px solid #7d8c98;background:var(--paper);padding:8px;color:var(--ink)}
-    .mission-chip .n{width:30px;height:30px;display:grid;place-items:center;border:2px solid var(--line);background:#dce5e8;font-weight:900}
-    .mission-chip strong{display:block;font-size:.78rem;line-height:1.16}
-    .mission-chip small{display:block;font-size:.66rem;color:#394b60;margin-top:3px}
+    .mission-chip{display:grid;grid-template-columns:32px 1fr;gap:8px;align-items:center;border:2px solid #7d8c98;background:var(--paper);padding:8px;color:var(--ink)}
+    .mission-chip .n{width:29px;height:29px;display:grid;place-items:center;border:2px solid var(--line);background:#dce5e8;font-weight:900}
+    .mission-chip strong{display:block;font-size:.76rem;line-height:1.16}
+    .mission-chip small{display:block;font-size:.64rem;color:#394b60;margin-top:3px}
     .mission-chip.active{background:#d8f0d9;border:3px solid #34764b;box-shadow:3px 3px 0 #34764b}
     .mission-chip.active .n{background:var(--yellow)}
     .mission-chip.done{background:#e0edf3}
-    .progress-block{margin:14px 1px 0;background:#e8e2c9;border:2px solid #8b815e;padding:10px;font-size:.75rem}
+    .progress-block{margin:14px 1px 0;background:#e8e2c9;border:2px solid #8b815e;padding:10px;font-size:.72rem}
     .progress-track{height:13px;border:2px solid var(--line);background:#fff;margin-top:7px}
     .progress-fill{height:100%;width:0;background:#35844e;transition:width .25s}
-    .field-note{margin-top:12px;border:2px dashed #8a7950;background:#fff4ca;padding:10px;font-size:.72rem}
+    .field-note{margin-top:12px;border:2px dashed #8a7950;background:#fff4ca;padding:10px;font-size:.7rem}
     .field-note strong{display:block;color:#594510;margin-bottom:3px}
     .workbench{padding:14px}
     .mission-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;background:#d8f0d9;border:4px solid #34764b;box-shadow:4px 4px 0 #1b3d2a;padding:13px 15px;margin-bottom:12px}
-    .eyebrow{font-size:.72rem;letter-spacing:.09em;font-weight:900;color:#245433;text-transform:uppercase}
-    .mission-head h2{font-size:clamp(1.35rem,2.4vw,2rem);line-height:1.08;margin:3px 0;color:#173f2a}
-    .mission-head p{margin:4px 0 0;max-width:730px;font-size:.86rem;color:#203b2b}
-    .phase-tag{background:var(--yellow);border:2px solid var(--line);padding:6px 9px;font-size:.72rem;font-weight:900;white-space:nowrap}
+    .eyebrow{font-size:.7rem;letter-spacing:.09em;font-weight:900;color:#245433;text-transform:uppercase}
+    .mission-head h2{font-size:clamp(1.3rem,2.4vw,1.95rem);line-height:1.08;margin:3px 0;color:#173f2a}
+    .mission-head p{margin:4px 0 0;max-width:730px;font-size:.82rem;color:#203b2b}
+    .phase-tag{background:var(--yellow);border:2px solid var(--line);padding:6px 9px;font-size:.68rem;font-weight:900;white-space:nowrap}
     .objective{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--paper);border:3px solid #c7bea0;padding:9px 12px;margin-bottom:12px}
-    .objective b{color:#654b14}
-    .objective p{font-size:.82rem;margin:2px 0}
-    .objective-status{max-width:260px;text-align:right;font-size:.74rem;font-weight:900;color:#34445a}
+    .objective b{color:#654b14;font-size:.76rem}
+    .objective p{font-size:.79rem;margin:2px 0}
+    .objective-status{max-width:290px;text-align:right;font-size:.72rem;font-weight:900;color:#34445a}
     .map-frame{position:relative;background:#b9ddc9;background-image:linear-gradient(90deg,rgba(255,255,255,.25) 2px,transparent 2px),linear-gradient(rgba(255,255,255,.25) 2px,transparent 2px);background-size:28px 28px;border:4px solid var(--line);box-shadow:inset 0 0 0 5px rgba(255,255,255,.2);overflow:hidden}
-    .map-ribbon{position:absolute;z-index:2;top:8px;left:9px;background:var(--paper);border:2px solid var(--line);padding:4px 8px;font-size:.67rem;font-weight:900;letter-spacing:.04em}
-    #network{display:block;width:100%;height:auto;max-height:510px}
-    .map-footer{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;background:#e4eedf;border:2px solid #67816e;border-top:0;padding:6px 9px;font-size:.68rem;color:#294536}
+    .map-ribbon{position:absolute;z-index:2;top:8px;left:9px;background:var(--paper);border:2px solid var(--line);padding:4px 8px;font-size:.63rem;font-weight:900;letter-spacing:.04em}
+    #network{display:block;width:100%;height:auto;max-height:590px}
+    .zone-label{font:900 13px ui-rounded,"Trebuchet MS",system-ui,sans-serif;letter-spacing:2px;fill:#526d58}
+    .edge{stroke:#344963;stroke-width:3;opacity:.78}
+    .edge.down{stroke:#9e3f3f;stroke-dasharray:8 7;opacity:.9}
+    .edge.route{stroke:#d09121;stroke-width:6;opacity:1}
+    .edge-dot{fill:#fffdf1;stroke:#344963;stroke-width:2}
+    .edge-dot.down{fill:#ffb2b2;stroke:#9e3f3f}
+    .edge-dot.route{fill:#ffdc75;stroke:#9b6714;stroke-width:3}
+    .edge-label{font:900 13px ui-rounded,"Trebuchet MS",system-ui,sans-serif;fill:#7b2525}
+    .edge-caption{font:800 12px ui-rounded,"Trebuchet MS",system-ui,sans-serif;fill:#304158}
+    .data-packet{shape-rendering:crispEdges;pointer-events:none;filter:drop-shadow(2px 2px 0 #17263d)}
+    .node circle,.node rect{stroke:#25364d;stroke-width:4;filter:drop-shadow(3px 3px 0 rgba(11,20,34,.45))}
+    .pc-node circle{fill:#fffdf1}
+    .pc-node.down circle{fill:#ffb2b2;stroke:#7b2525;stroke-dasharray:5 3}
+    .gateway-node circle{fill:#ffdc75}
+    .internet-node rect{fill:#9ce7ee}
+    .internet-node.down rect{fill:#ffb2b2}
+    .node.route circle,.node.route rect{stroke:#d09121;stroke-width:7}
+    .node-name{font:900 14px ui-rounded,"Trebuchet MS",system-ui,sans-serif;fill:#17263d}
+    .node-state{font:800 10px ui-rounded,"Trebuchet MS",system-ui,sans-serif;letter-spacing:.5px;fill:#43566d}
+    .node.down .node-state{fill:#7b2525}
+    .map-footer{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;background:#e4eedf;border:2px solid #67816e;border-top:0;padding:6px 9px;font-size:.65rem;color:#294536}
     .key{display:inline-block;width:11px;height:5px;background:#344963;vertical-align:middle;margin-right:4px}
     .key.alt{background:#d09121}
-    .learning-strip{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:11px}
-    .learn-cell{background:#fff8df;border:2px solid #bcb18e;padding:9px;font-size:.73rem}
-    .learn-cell strong{display:block;color:#5a4818;font-size:.73rem;margin-bottom:3px}
-    .lower{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(280px,.95fr);gap:12px;margin-top:12px}
+    .key.down{background:#9e3f3f}
+    .learning-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:11px}
+    .learn-cell{background:#fff8df;border:2px solid #bcb18e;padding:9px;font-size:.7rem}
+    .learn-cell strong{display:block;color:#5a4818;font-size:.71rem;margin-bottom:3px}
+    .lower{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(270px,.92fr);gap:12px;margin-top:12px}
     .panel{background:var(--paper);border:3px solid var(--line);padding:12px;min-width:0}
-    .panel h3{margin:0 0 8px;color:#294b70;font-size:.97rem}
-    .panel-intro{margin:0 0 10px;font-size:.76rem;color:#405268}
-    .send-area{border-bottom:2px dashed #a79f88;padding-bottom:11px;margin-bottom:10px}
-    .send-buttons,.control-grid,.link-grid,.quiz-options{display:flex;gap:7px;flex-wrap:wrap}
-    .send-buttons button{font-size:.76rem;background:var(--cyan);padding:.45rem .62rem}
-    .send-buttons .batch{background:var(--yellow);flex-basis:100%}
-    .subhead{margin:10px 0 6px;font-size:.72rem;font-weight:900;color:#344b66;letter-spacing:.035em;text-transform:uppercase}
-    .control-card{border:2px solid #aeb8bf;background:#f2f1e7;padding:8px;margin:6px 0}
-    .control-card h4{font-size:.72rem;margin:0 0 6px;color:#33495f}
-    .control-grid button,.link-grid button{background:#e4e9ec;font-size:.68rem;min-height:39px;padding:.36rem .5rem;box-shadow:2px 2px 0 #667587}
-    button.is-down{background:var(--coral)!important;color:#381414}
-    button.is-up{background:var(--mint)!important}
-    .log{max-height:190px;overflow:auto;background:#18283d;color:#eef6fa;border:2px solid #536a83;padding:8px;font-size:.69rem}
-    .log p{margin:0;padding:5px 2px;border-bottom:1px dotted #73869a}
-    .log p:last-child{border-bottom:0}
-    .log .good{color:#b4f0c6}.log .bad{color:#ffc1c1}.log .info{color:#d1e8fa}
-    .quiz{margin-top:13px;border:4px solid #a87516;background:#fff1b7;padding:14px;box-shadow:4px 4px 0 #5e451a}
-    .quiz h3{margin:3px 0 9px;color:#3e3217;font-size:1.12rem}
-    .quiz .quiz-kicker{font-size:.7rem;letter-spacing:.08em;font-weight:900;color:#614917}
-    .quiz-options{display:grid;grid-template-columns:1fr 1fr}
-    .quiz-options button{text-align:left;background:#fffdf1;font-size:.78rem;box-shadow:2px 2px 0 #64542e}
-    .quiz-options button.correct{background:var(--mint);border-color:#245d3b}
-    .quiz-options button.wrong{background:var(--coral);border-color:#8e3434}
-    .feedback{margin:9px 0 0;font-size:.81rem;font-weight:750}
-    .continue{display:none;margin-top:11px;background:var(--mint)}
-    .complete{display:none;background:#d8f0d9;border:4px solid #34764b;box-shadow:4px 4px 0 #1b3d2a;padding:clamp(18px,4vw,36px);margin-top:14px}
-    .complete:not([hidden]){display:block}
-    .complete h2{font-size:clamp(1.7rem,3vw,2.8rem);margin:5px 0;color:#173f2a}
-    .complete p{max-width:820px}
-    .final-answer{display:none;border:3px dashed #34764b;background:var(--paper);padding:12px;margin-top:12px}
-    .final-answer h3{margin:0 0 5px;color:#173f2a}
-    .replay{margin-top:12px;background:var(--yellow)}
+    .panel h3{margin:0 0 8px;color:#294b70;font-size:.94rem}
+    .panel-intro{margin:0 0 10px;font-size:.72rem;color:#405268}
+    .test-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:end;border-bottom:2px dashed #a79f88;padding-bottom:11px;margin-bottom:12px}
+    .field{display:grid;gap:4px}
+    .field label{font-size:.68rem;font-weight:850;color:#34445a}
+    select{min-height:42px;width:100%;border:2px solid #65768a;background:#fff;color:var(--ink);padding:6px 8px;font-weight:750}
+    .test-row button{grid-column:1/-1}
+    .control-card{border:2px solid #aeb8bb;background:#f3f1e4;padding:9px;margin-top:9px}
+    .control-card h4{font-size:.68rem;letter-spacing:.06em;margin:0 0 7px;color:#30445b}
+    .control-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+    .control-grid button,.link-grid button{background:#e9f2f2;box-shadow:2px 2px 0 #65768a;font-size:.65rem;min-height:40px;padding:5px}
+    .control-grid button.is-down,.link-grid button.is-down{background:#f9d5d0;color:#652727}
+    .link-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+    .link-grid button{display:flex;justify-content:space-between;align-items:center;gap:5px}
+    .link-grid button .state{font-size:.9rem}
+    .log{height:100%;min-height:245px;max-height:450px;overflow:auto;background:#18263a;color:#f6f1dc;border:3px solid #0b1422;padding:10px;font-size:.7rem}
+    .log p{margin:0 0 8px;padding:0 0 7px;border-bottom:1px dashed #8090a2}
+    .log p:last-child{border:0;margin:0;padding:0}
+    .log .ok{color:#a6e7c2}.log .warn{color:#ffdc75}.log .fail{color:#ffb2b2}
+    .quiz,.complete{margin-top:14px;background:#e5efdf;border:4px solid #34764b;box-shadow:4px 4px 0 #1b3d2a;padding:16px}
+    .quiz-kicker{font-size:.68rem;letter-spacing:.1em;font-weight:900;color:#245433}
+    .quiz h3,.complete h2{font-size:1.28rem;line-height:1.2;color:#173f2a;margin:5px 0 12px}
+    .quiz-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+    .quiz-options button{background:var(--paper);text-align:left;font-size:.72rem;line-height:1.35}
+    .quiz-options button.correct,#finalOptions button.correct{background:var(--mint);border-color:#245d3b}
+    .quiz-options button.incorrect,#finalOptions button.incorrect{background:var(--coral);border-color:#7b2525}
+    #finalOptions button:disabled{opacity:1;cursor:default}
+    .feedback{min-height:1.3em;font-size:.76rem;font-weight:800;color:#203b2b}
+    .continue,.replay{background:var(--yellow)}
+    .complete p{font-size:.82rem;max-width:850px}
+    .final-answer{margin-top:12px;background:var(--paper);border:3px solid #34764b;padding:12px;font-size:.82rem}
+    .final-answer:empty{display:none}
     .sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
     [hidden]{display:none!important}
-    body.high-contrast{--cream:#fff;--paper:#fff;--ink:#000;--navy:#000;--navy2:#111;--line:#000;--muted:#111;background:#000;color:#000}
+    body.high-contrast{--cream:#fff;--paper:#fff;--ink:#000;--navy:#000;--navy2:#111;--line:#000;background:#000;color:#000}
     body.high-contrast .topbar{color:#fff}
-    body.high-contrast .intro,body.high-contrast .rail,body.high-contrast .workbench{border-color:#000}
-    body.high-contrast .mission-head{background:#d7ffd9}
     body.high-contrast .map-frame{background-color:#fff}
-    body.high-contrast .learn-cell,body.high-contrast .control-card{background:#fff;border-color:#000}
     html.large-text{--font-scale:1.12}
     html.motion-reduced{scroll-behavior:auto}
     html.motion-reduced *,html.motion-reduced *::before,html.motion-reduced *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
-    @media(max-width:900px){.game{grid-template-columns:190px minmax(0,1fr)}.lower{grid-template-columns:1fr}.learning-strip{grid-template-columns:1fr 1fr 1fr}.rail{padding:10px}.workbench{padding:11px}}
+    @media(max-width:980px){.game{grid-template-columns:195px minmax(0,1fr)}.lower{grid-template-columns:1fr}.log{min-height:190px}.workbench{padding:11px}}
     @media(max-width:680px){
       html{font-size:calc(17px * var(--font-scale))}
       .topbar{padding:12px 14px}.page{padding:0 12px 24px}
@@ -140,19 +155,23 @@
       .game,.game.started{grid-template-columns:1fr;gap:11px}
       .rail{position:static;padding:10px}
       .mission-list{grid-template-columns:1fr 1fr}
-      .mission-chip{padding:6px;grid-template-columns:29px 1fr}
-      .mission-chip .n{width:26px;height:26px}
-      .mission-chip strong{font-size:.7rem}
-      .mission-chip small{font-size:.6rem}
+      .mission-chip{padding:6px;grid-template-columns:27px 1fr}
+      .mission-chip .n{width:25px;height:25px}
+      .mission-chip strong{font-size:.67rem}
+      .mission-chip small{font-size:.58rem}
       .progress-block{margin-top:9px}
       .workbench{padding:9px}
       .objective{align-items:flex-start;flex-direction:column}
       .objective-status{text-align:left;max-width:none}
-      .learning-strip{grid-template-columns:1fr}
-      .quiz-options{grid-template-columns:1fr}
+      .learning-strip,.quiz-options{grid-template-columns:1fr}
       .settings{flex-wrap:wrap}
-      .map-ribbon{font-size:.6rem}
-      .map-footer{font-size:.6rem}
+      .map-ribbon{font-size:.54rem}
+      .map-footer{font-size:.57rem}
+      .node-name{font-size:17px}
+      .node-state{font-size:12px}
+      .control-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .test-row{grid-template-columns:1fr}
+      .test-row button{grid-column:auto}
     }
     @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
   </style>
@@ -166,7 +185,7 @@
     </div>
     <div class="hud" aria-label="Painel de acessibilidade e progresso">
       <span class="hud-pill">ETAPA <b id="hudStep">0/4</b></span>
-      <span class="hud-pill">ROTAS TESTADAS <b id="hudRoutes">0</b></span>
+      <span class="hud-pill">TESTES <b id="hudTests">0</b></span>
       <div class="settings" role="group" aria-label="Acessibilidade">
         <button type="button" id="fontButton" aria-pressed="false" title="Aumentar o tamanho do texto">A+</button>
         <button type="button" id="contrastButton" aria-pressed="false">Alto contraste</button>
@@ -177,21 +196,21 @@
   <main class="page" id="main">
     <section class="intro" id="intro" aria-labelledby="introTitle">
       <div>
-        <span class="kicker">◆ Chamado de campo 04</span>
-        <h1 id="introTitle">O sinal precisa encontrar um caminho.</h1>
-        <p class="intro-copy">Quatro computadores perderam contato com a central. Sua missão é testar caminhos, provocar falhas com segurança e descobrir <strong>o que continua funcionando — e o que não.</strong></p>
+        <span class="kicker">◆ Chamado de campo 05</span>
+        <h1 id="introTitle">Dez caminhos.<br>Uma rede para investigar.</h1>
+        <p class="intro-copy">Cinco computadores precisam trocar dados mesmo quando um enlace ou equipamento falha. Faça testes, acompanhe os caminhos reais e descubra também por que a saída para a internet é uma função separada.</p>
         <div class="start-row">
           <button type="button" class="start" id="startButton">Abrir o laboratório <span aria-hidden="true">→</span></button>
-          <span class="hint">4 simulações • 4 quizzes obrigatórios • um desafio final</span>
+          <span class="hint">4 missões • 4 quizzes • um desafio final</span>
         </div>
       </div>
-      <aside class="brief-board" aria-label="Resumo da missão">
+      <aside class="brief-board" aria-label="Resumo da investigação">
         <h2>ANOTAÇÃO DA EQUIPE</h2>
         <ul>
-          <li>A central se conecta a dois roteadores de distribuição.</li>
-          <li>Há uma ligação direta entre esses roteadores.</li>
-          <li>Cada um atende dois computadores.</li>
-          <li>Desative componentes e observe os caminhos reais.</li>
+          <li>Cinco PCs ficam dentro do perímetro hexagonal.</li>
+          <li>Há uma ligação direta entre cada par de PCs.</li>
+          <li>O gateway atende somente à saída externa.</li>
+          <li>Desative componentes e confira o grafo ao vivo.</li>
         </ul>
       </aside>
     </section>
@@ -204,7 +223,7 @@
           <strong id="railProgress">0 de 4 etapas concluídas</strong>
           <div class="progress-track" role="progressbar" aria-label="Progresso das etapas" aria-valuemin="0" aria-valuemax="4" aria-valuenow="0" id="progressBar"><div class="progress-fill" id="progressFill"></div></div>
         </div>
-        <div class="field-note"><strong>REGRA DE OURO</strong>Uma rota alternativa não conserta o equipamento final: se o roteador que liga um computador à rede falha, os computadores conectados a ele ficam sem acesso.</div>
+        <div class="field-note"><strong>REGRA DE OURO</strong>O gateway só participa da ligação externa. Ele não entra nas rotas LAN entre computadores.</div>
       </aside>
 
       <div class="workbench" id="workbench">
@@ -221,34 +240,38 @@
           <div class="objective-status" id="objectiveStatus" aria-live="polite">Aguardando ação</div>
         </div>
         <div class="map-frame">
-          <div class="map-ribbon">MAPA VIVO • CENTRAL → TERMINAIS</div>
-          <svg id="network" viewBox="0 0 800 500" role="img" aria-labelledby="mapTitle mapDescription">
-            <title id="mapTitle">Mapa de conexões da rede</title>
-            <desc id="mapDescription">Uma central ligada a dois roteadores. Os roteadores também têm uma ligação direta entre si, e cada um atende dois computadores.</desc>
+          <div class="map-ribbon">MAPA VIVO • 5 TERMINAIS • 10 ENLACES</div>
+          <svg id="network" viewBox="0 0 800 570" role="img" aria-labelledby="mapTitle mapDescription">
+            <title id="mapTitle">Mapa de conexões entre cinco computadores</title>
+            <desc id="mapDescription">Cinco computadores posicionados ao redor de um centro dentro de um hexágono. Cada computador liga-se diretamente aos outros quatro. Um gateway central conecta-se apenas à saída externa e não participa das rotas entre computadores.</desc>
           </svg>
         </div>
         <div class="map-footer">
-          <span><i class="key" aria-hidden="true"></i> Ligação ativa</span>
-          <span><i class="key alt" aria-hidden="true"></i> Rota percorrida no último envio</span>
-          <span>Pacote percorre apenas ligações ativas.</span>
+          <span><i class="key" aria-hidden="true"></i> Enlace ativo</span>
+          <span><i class="key alt" aria-hidden="true"></i> Caminho percorrido</span>
+          <span><i class="key down" aria-hidden="true"></i> Falha</span>
+          <span>Os pacotes usam apenas nós e enlaces ativos.</span>
         </div>
         <div class="learning-strip" id="learningStrip" aria-label="Pistas desta missão"></div>
         <div class="lower">
           <section class="panel" aria-labelledby="sendHeading">
-            <h3 id="sendHeading">📦 Transmissão de pacotes</h3>
-            <p class="panel-intro">Os pacotes partem da central. A simulação calcula um caminho disponível até cada destino.</p>
-            <div class="send-area">
-              <div class="send-buttons" id="sendButtons"></div>
+            <h3 id="sendHeading">📦 Teste de transmissão</h3>
+            <p class="panel-intro">Escolha dois computadores para calcular o caminho mais curto. A saída externa é testada separadamente.</p>
+            <div class="test-row">
+              <div class="field"><label for="sourceSelect">ORIGEM</label><select id="sourceSelect" aria-label="Computador de origem"></select></div>
+              <div class="field"><label for="targetSelect">DESTINO</label><select id="targetSelect" aria-label="Computador de destino"></select></div>
+              <button type="button" id="sendPairButton">Testar PC ↔ PC</button>
+              <button type="button" id="sendExternalButton">Testar saída externa do gateway ↔ internet</button>
             </div>
             <h3>🛠️ Painel de manutenção</h3>
-            <p class="panel-intro">Alterne falhas e recuperações. O estado atual aparece também no mapa.</p>
-            <div class="control-card"><h4>ROTEADORES</h4><div class="control-grid" id="routerControls"></div></div>
-            <div class="control-card"><h4>LIGAÇÕES • roteador a roteador e computador</h4><div class="link-grid" id="linkControls"></div></div>
-            <div class="control-card"><h4>COMPUTADORES</h4><div class="control-grid" id="computerControls"></div></div>
+            <p class="panel-intro">Alterne falhas e recuperações. O estado atual também aparece no mapa.</p>
+            <div class="control-card"><h4>COMPUTADORES • falha desativa nó e encaminhamento</h4><div class="control-grid" id="computerControls"></div></div>
+            <div class="control-card"><h4>ENLACES ENTRE COMPUTADORES • 10</h4><div class="link-grid" id="linkControls"></div></div>
+            <div class="control-card"><h4>GATEWAY E SAÍDA EXTERNA</h4><div class="control-grid" id="gatewayControls"></div></div>
           </section>
           <section class="panel" aria-labelledby="logHeading">
             <h3 id="logHeading">🗒️ Registro de campo</h3>
-            <p class="panel-intro">Cada envio informa se encontrou caminho e por quais nós passou.</p>
+            <p class="panel-intro">Cada envio mostra o resultado e os nós visitados.</p>
             <div class="log" id="log" role="log" aria-live="polite" aria-relevant="additions text" aria-label="Histórico de eventos"><p class="info">Pronto. Inicie os testes da etapa atual.</p></div>
           </section>
         </div>
@@ -257,12 +280,12 @@
           <h3 id="quizQuestion" tabindex="-1"></h3>
           <div class="quiz-options" id="quizOptions"></div>
           <p class="feedback" id="quizFeedback" aria-live="polite"></p>
-          <button type="button" class="continue" id="continueButton">Avançar para a próxima etapa →</button>
+          <button type="button" class="continue" id="continueButton" hidden>Avançar para a próxima etapa →</button>
         </section>
         <section class="complete" id="complete" aria-labelledby="completeTitle" hidden>
           <span class="kicker">Desafio de dedução</span>
-          <h2 id="completeTitle" tabindex="-1">Qual desenho de rede você investigou?</h2>
-          <p>Considere as evidências do mapa: os roteadores têm mais de um caminho entre si, e cada computador depende do roteador ao qual está ligado. Selecione uma opção para revelar a conclusão.</p>
+          <h2 id="completeTitle" tabindex="-1">Qual é o nome desta topologia?</h2>
+          <p>Considere as evidências do mapa: há cinco computadores e cada par possui uma ligação direta. O gateway tem uma função independente, voltada à rede externa.</p>
           <div class="quiz-options" id="finalOptions" role="group" aria-label="Escolha uma resposta"></div>
           <div class="final-answer" id="finalAnswer" aria-live="polite" tabindex="-1"></div>
           <button type="button" class="replay" id="replayButton">Reiniciar investigação</button>
@@ -275,334 +298,303 @@
     (() => {
       const $ = id => document.getElementById(id);
       const svgNS = 'http://www.w3.org/2000/svg';
-      const nodeInfo = {
-        G:{name:'CENTRAL',type:'gateway',label:'Gateway • saída para a rede externa'},
-        A:{name:'ROTEADOR R1',type:'router',label:'Roteador downstream R1'},
-        B:{name:'ROTEADOR R2',type:'router',label:'Roteador downstream R2'},
-        T1:{name:'PC 1',type:'computer',label:'Computador 1'},
-        T2:{name:'PC 2',type:'computer',label:'Computador 2'},
-        T3:{name:'PC 3',type:'computer',label:'Computador 3'},
-        T4:{name:'PC 4',type:'computer',label:'Computador 4'}
+      const pcs = ['PC1','PC2','PC3','PC4','PC5'];
+      const pcLabels = {PC1:'PC 1',PC2:'PC 2',PC3:'PC 3',PC4:'PC 4',PC5:'PC 5'};
+      const positionsDesktop = {
+        PC1:[400,115], PC2:[567,236], PC3:[503,432], PC4:[297,432], PC5:[233,236],
+        G:[58,300], X:[58,415]
       };
-      const edgeInfo = {
-        ga:{from:'G',to:'A',label:'Central ↔ R1'},
-        gb:{from:'G',to:'B',label:'Central ↔ R2'},
-        ab:{from:'A',to:'B',label:'R1 ↔ R2'},
-        a1:{from:'A',to:'T1',label:'R1 ↔ PC 1'},
-        a2:{from:'A',to:'T2',label:'R1 ↔ PC 2'},
-        b3:{from:'B',to:'T3',label:'R2 ↔ PC 3'},
-        b4:{from:'B',to:'T4',label:'R2 ↔ PC 4'}
+      const positionsMobile = {
+        PC1:[200,135], PC2:[295,215], PC3:[260,355], PC4:[140,355], PC5:[105,215],
+        G:[200,600], X:[200,700]
       };
+      let positions=positionsDesktop;
+      const pairs = [];
+      for(let i=0;i<pcs.length;i++) for(let j=i+1;j<pcs.length;j++) pairs.push([pcs[i],pcs[j]]);
+      const pairId = (a,b) => [a,b].sort().join('-');
+      const edges = Object.fromEntries(pairs.map(([a,b]) => {
+        const id=pairId(a,b);
+        return [id,{from:a,to:b,label:`${pcLabels[a]} ↔ ${pcLabels[b]}`}];
+      }));
+      const edgeIds = Object.keys(edges);
       const missions = [
-        {title:'Primeiro contato',tag:'SIMULAÇÃO 01',desc:'Envie informação a todos os computadores e veja como a central distribui cada pacote.',objective:'Faça os quatro computadores receberem um pacote.',clues:[['ORIGEM','Todo envio começa na gateway, a porta de entrada e saída da rede.'],['DESTINO','Um computador só recebe se estiver ativo e ligado a um roteador ativo.'],['CAMINHO','Um pacote percorre uma sequência de ligações; não teletransporta entre dispositivos.']]},
-        {title:'Um enlace caiu',tag:'SIMULAÇÃO 02',desc:'Interrompa a ligação entre a central e R1. Descubra se R1 ainda pode alcançar a central por outra rota.',objective:'Desative Central ↔ R1; envie para PC 1 pela rota restante e confirme envio também para PC 3.',clues:[['CAMINHO EXTRA','R1 pode alcançar a gateway por R2: R1 → R2 → gateway.'],['SEM ATALHO MÁGICO','A ligação direta R1 ↔ R2 só ajuda enquanto ela própria estiver ativa.'],['OBSERVE','O envio para cada destino é calculado com os enlaces disponíveis naquele momento.']]},
-        {title:'Roteador indisponível',tag:'SIMULAÇÃO 03',desc:'Agora o problema está no próprio R1. Teste os dois computadores ligados a ele e compare com a ramificação de R2.',objective:'Desative R1; tente enviar a PC 1 e PC 2 e comprove que PC 3 ainda recebe.',clues:[['FALHA LOCAL','R1 avariado não encaminha pacotes e deixa PC 1 e PC 2 sem acesso.'],['OUTRA RAMIFICAÇÃO','PC 3 continua alcançável por R2 e pela gateway, se essas ligações estiverem ativas.'],['LIMITE REAL','A ligação alternativa não substitui o roteador que conecta o cliente.']]},
-        {title:'Reparo e decisão',tag:'SIMULAÇÃO 04',desc:'Recupere os componentes, provoque uma falha de computador, compare os destinos e restaure o serviço.',objective:'Restaure o que falhou; falhe PC 4 e teste-o; confirme PC 3; recupere PC 4 e envie de novo.',clues:[['CUSTO','Mais enlaces e portas exigem investimento, energia, configuração e monitoramento.'],['ONDE USAR','Faz sentido quando disponibilidade importa: hospitais, data centers e operações críticas.'],['MITIGAÇÃO','Dimensione a redundância; documente e teste rotas; monitore enlaces; mantenha peças e planos de recuperação.']]}
+        {title:'Mapa de contatos',tag:'SIMULAÇÃO 01',desc:'Comece com a rede íntegra. Compare duas conversas e observe o enlace direto entre seus computadores.',objective:'Teste PC 1 ↔ PC 2 e PC 4 ↔ PC 5.',clues:[['VIZINHANÇA','Cada computador tem uma ligação própria com os outros quatro.'],['GRAFO','O mapa tem cinco nós de usuário e dez enlaces de pares.'],['CAMINHO','O simulador escolhe a rota ativa com menos saltos.']]},
+        {title:'Um enlace interrompido',tag:'SIMULAÇÃO 02',desc:'Corte uma ligação direta. Descubra se os mesmos computadores ainda conseguem trocar pacotes por uma rota alternativa.',objective:'Desative PC 1 ↔ PC 2; teste o par e confirme um caminho alternativo.',clues:[['DESVIO','Uma segunda rota pode atravessar outro computador ativo.'],['DEPENDÊNCIA','Cada enlace é independente: a falha de um não derruba os demais.'],['OBSERVE','O caminho destacado mostra quais nós e enlaces foram usados.']]},
+        {title:'Um computador fora de serviço',tag:'SIMULAÇÃO 03',desc:'Um computador pode ser destino, origem ou parte de uma rota. Compare uma transmissão destinada ao equipamento desligado com outra conversa.',objective:'Desative PC 3; teste PC 1 → PC 3 e, depois, PC 1 → PC 2.',clues:[['ENDPOINT','Um computador desligado não envia nem recebe pacotes.'],['TRÂNSITO','Nós indisponíveis também não podem encaminhar uma rota.'],['ISOLAMENTO','Outros pares continuam usando os próprios enlaces ativos.']]},
+        {title:'Saída externa independente',tag:'SIMULAÇÃO 04',desc:'A função do gateway é diferente das ligações entre computadores. Confira o que acontece quando ele falha.',objective:'Reative PC 3 e PC 1 ↔ PC 2; falhe o gateway; teste a saída externa e PC 1 ↔ PC 2; restaure o gateway e teste a saída de novo.',clues:[['SEPARAÇÃO','As conversas LAN são calculadas sem incluir o gateway.'],['ESCOPO','A falha do gateway interrompe a saída externa, não os pares locais.'],['VALIDAÇÃO','Depois do reparo, um novo teste confirma o retorno da saída.']]}
       ];
       const quizzes = [
-        {question:'No primeiro teste, por que os computadores podem receber dados por ligações diferentes?',answers:['Porque existem caminhos alternativos entre roteadores ativos.','Porque uma falha em qualquer ponto não afeta ninguém.','Porque os computadores se conectam diretamente uns aos outros.'],correct:0,why:'Isso mesmo. A rede tem mais de um caminho entre roteadores; a rota só funciona se seus nós e enlaces estiverem ativos.'},
-        {question:'A ligação Central ↔ R1 falhou. Como PC 1 ainda pode receber?',answers:['Por R1 → R2 → gateway, se ambas as ligações do desvio estiverem ativas.','Pelo enlace que acabou de falhar.','Sem passar por roteador algum.'],correct:0,why:'Correto. O desvio passa pela ligação R1 ↔ R2 e depois R2 ↔ gateway; cada trecho precisa estar operacional.'},
-        {question:'R1 falhou, mas R2 e a gateway continuam ativos. Qual resultado é esperado?',answers:['PC 1 e PC 2 perdem acesso; a ramificação de R2 ainda pode funcionar.','PC 1 e PC 2 mudam automaticamente para outro roteador.','Todos os computadores deixam de funcionar.'],correct:0,why:'Exato. Um caminho alternativo entre roteadores não substitui R1 para os clientes fisicamente ligados a ele. A outra ramificação segue.'},
-        {question:'Qual avaliação equilibra melhor disponibilidade, custo e operação?',answers:['Usar caminhos redundantes onde a continuidade justifica o custo e monitorar/testar os enlaces.','Conectar tudo de todos os modos, sem documentação ou testes.','Evitar toda redundância, mesmo quando uma interrupção seria crítica.'],correct:0,why:'Boa decisão. Redundância pode elevar a disponibilidade, mas custa mais e torna a configuração e o diagnóstico mais complexos. Priorize pontos críticos, monitore e teste.'}
+        {question:'No mapa inicial, quantas ligações diretas chegam a cada computador?',answers:['Quatro: uma para cada outro computador.','Duas: uma para o gateway e outra para a internet.','Uma: todos compartilham um único enlace.'],correct:0,why:'Isso mesmo. Com cinco computadores, cada um tem uma ligação direta com os outros quatro.'},
+        {question:'PC 1 ↔ PC 2 foi interrompida. Como ainda pode haver comunicação entre eles?',answers:['Por uma rota com outro computador ativo como intermediário.','Pelo enlace que está inativo.','Pelo gateway, que participa das rotas locais.'],correct:0,why:'Correto. O simulador procura um caminho alternativo pelo grafo de computadores; o gateway não faz parte dessa rota.'},
+        {question:'PC 3 falhou. Qual previsão combina com o modelo?',answers:['PC 1 não alcança PC 3, mas ainda pode falar com PC 2 se houver rota ativa.','A falha de PC 3 desliga automaticamente os outros quatro.','PC 3 recebe pacotes, mas não consegue enviá-los.'],correct:0,why:'Exato. O nó indisponível não pode ser origem, destino ou intermediário; os demais continuam dependendo de seus próprios caminhos.'},
+        {question:'O gateway falhou. O que continua funcionando?',answers:['As conversas entre PCs, pois o gateway não integra os caminhos LAN.','Nenhuma conexão, pois todo pacote entre PCs passa pelo gateway.','A saída externa continua ativa, mas os PCs param.'],correct:0,why:'Isso mesmo. A falha afeta a saída externa. As rotas entre computadores são calculadas somente no grafo LAN.'}
       ];
-      const positionsDesktop = {G:[400,115],A:[235,275],B:[565,275],T1:[110,410],T2:[320,410],T3:[480,410],T4:[690,410]};
-      const positionsMobile = {G:[210,92],A:[112,242],B:[308,242],T1:[66,445],T2:[158,445],T3:[262,445],T4:[354,445]};
-      let positions = positionsDesktop;
-      let routers = {G:true,A:true,B:true};
-      let computers = {T1:true,T2:true,T3:true,T4:true};
-      let links = Object.fromEntries(Object.keys(edgeInfo).map(id => [id,true]));
-      let current = 0, routesTested = 0, answered = false, inFlight = false;
+      let computers, links, gateway, externalLink;
+      let current=0, tests=0, answered=false, routeLinks=[], routeNodes=[], externalHighlight=false;
+      let flags={}, done=[false,false,false,false], finalRevealed=false;
       let reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      let delivered = new Set(), lastRoute = [], actionFlags = {}, done = [false,false,false,false];
-      let finalRevealed = false;
 
-      function routeBetween(start, goal) {
-        if((Object.hasOwn(routers,start)&&!routers[start])||(Object.hasOwn(computers,start)&&!computers[start])||
-           (Object.hasOwn(routers,goal)&&!routers[goal])||(Object.hasOwn(computers,goal)&&!computers[goal])) return null;
-        const queue = [[start]], visited = new Set([start]);
+      function routeBetween(start,goal) {
+        if(!computers[start]||!computers[goal]) return null;
+        const queue=[[start]], seen=new Set([start]);
         while(queue.length) {
-          const path = queue.shift(), here = path[path.length-1];
-          if(here === goal) return path;
-          for(const [id,e] of Object.entries(edgeInfo)) {
+          const path=queue.shift(), here=path[path.length-1];
+          if(here===goal) return path;
+          for(const id of edgeIds) {
             if(!links[id]) continue;
-            let next = null;
-            if(e.from === here) next = e.to;
-            else if(e.to === here) next = e.from;
-            if(!next || visited.has(next)) continue;
-            if(nodeInfo[next].type !== 'computer' && !routers[next]) continue;
-            if(nodeInfo[next].type === 'computer' && !computers[next]) continue;
-            visited.add(next); queue.push([...path,next]);
+            const edge=edges[id], next=edge.from===here?edge.to:edge.to===here?edge.from:null;
+            if(!next||seen.has(next)||!computers[next]) continue;
+            seen.add(next);queue.push([...path,next]);
           }
         }
         return null;
       }
-      function edgeFor(a,b) {
-        return Object.keys(edgeInfo).find(id => (edgeInfo[id].from===a&&edgeInfo[id].to===b)||(edgeInfo[id].from===b&&edgeInfo[id].to===a));
-      }
-      function log(message,type='info') {
-        const row=document.createElement('p'); row.className=type; row.textContent='› '+message;
-        $('log').prepend(row); while($('log').children.length>24) $('log').lastElementChild.remove();
-        $('liveStatus').textContent=message;
-      }
-      function updateMapDescription() {
-        const downRouters=Object.keys(routers).filter(id=>!routers[id]).map(id=>id==='G'?'gateway':`roteador ${id}`).join(', ');
-        const downPcs=Object.keys(computers).filter(id=>!computers[id]).map(id=>`computador ${id.slice(1)}`).join(', ');
-        const downLinks=Object.keys(links).filter(id=>!links[id]).map(id=>edgeInfo[id].label).join(', ');
-        $('mapDescription').textContent=`Gateway ligada a dois roteadores downstream; os roteadores têm ligação direta entre si, e cada um atende dois computadores. ${downRouters?`Roteador(es) com falha: ${downRouters}.`:''} ${downPcs?`Computador(es) com falha: ${downPcs}.`:''} ${downLinks?`Enlace(s) interrompido(s): ${downLinks}.`:''}`;
+      function svg(tag,attrs={},text='') {
+        const el=document.createElementNS(svgNS,tag);
+        for(const [key,value] of Object.entries(attrs)) el.setAttribute(key,String(value));
+        if(text) el.textContent=text;
+        return el;
       }
       function renderMap() {
-        const svg=$('network'), mobile=window.matchMedia('(max-width: 680px)').matches;
+        const map=$('network'), title=map.querySelector('title'), desc=map.querySelector('desc');
+        const mobile=window.matchMedia('(max-width: 680px)').matches;
         positions=mobile?positionsMobile:positionsDesktop;
-        svg.setAttribute('viewBox',mobile?'0 0 420 520':'0 0 800 500');
-        let out='';
-        for(const [id,e] of Object.entries(edgeInfo)) {
-          const [x1,y1]=positions[e.from], [x2,y2]=positions[e.to];
-          const active=links[id], highlighted=lastRoute.includes(id);
-          out+=`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${highlighted?'#c58216':'#344963'}" stroke-width="${highlighted?10:7}" stroke-linecap="square" ${active?'':'stroke-dasharray="9 8" opacity=".42"'} aria-hidden="true"/>`;
-          if(active) out+=`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${highlighted?'#ffdc75':'#d4c68e'}" stroke-width="2" stroke-linecap="square" ${highlighted?'':'opacity=".7"'} aria-hidden="true"/>`;
+        map.setAttribute('viewBox',mobile?'0 0 420 760':'0 0 800 570');
+        map.replaceChildren(title,desc);
+        const failedPcs=pcs.filter(id=>!computers[id]).map(id=>pcLabels[id]);
+        const failedLinks=edgeIds.filter(id=>!links[id]).map(id=>edges[id].label);
+        desc.textContent=`Cinco computadores dentro de um hexágono, com dez ligações diretas possíveis entre eles. Gateway ${gateway?'ativo':'com falha'} e enlace externo ${externalLink?'ativo':'com falha'}. ${failedPcs.length?`Computadores com falha: ${failedPcs.join(', ')}.`:'Todos os computadores estão ativos.'} ${failedLinks.length?`Enlaces interrompidos: ${failedLinks.join('; ')}.`:'Todos os enlaces entre computadores estão ativos.'}`;
+        const cx=mobile?200:400,cy=292,rx=mobile?180:260,ry=250;
+        const hexPoints=Array.from({length:6},(_,i)=>{
+          const angle=(-90+i*60)*Math.PI/180;
+          return `${cx+rx*Math.cos(angle)},${cy+ry*Math.sin(angle)}`;
+        }).join(' ');
+        map.append(svg('polygon',{points:hexPoints,fill:'#d7ead8',stroke:'#607b68','stroke-width':3,'stroke-dasharray':'8 7'}));
+        map.append(svg('text',{x:cx,y:62,'text-anchor':'middle',class:'zone-label'},'ÁREA LOCAL'));
+        for(const id of edgeIds) {
+          const e=edges[id],[x1,y1]=positions[e.from],[x2,y2]=positions[e.to];
+          const active=links[id], selected=routeLinks.includes(id);
+          const line=svg('line',{x1,y1,x2,y2,class:`edge${active?'':' down'}${selected?' route':''}`});
+          map.append(line);
+          const mx=(x1+x2)/2,my=(y1+y2)/2;
+          map.append(svg('circle',{cx:mx,cy:my,r:10,class:`edge-dot${active?'':' down'}${selected?' route':''}`}));
+          map.append(svg('text',{x:mx,y:my+3,'text-anchor':'middle',class:'edge-label'},active?'':'×'));
         }
-        const routerSize=mobile?50:58, pcSize=mobile?46:50;
-        for(const id of ['G','A','B']) {
-          const [x,y]=positions[id], up=routers[id], w=routerSize+38, h=routerSize;
-          const title=nodeInfo[id].name, role=id==='G'?'GATEWAY':(id==='A'?'DOWNSTREAM':'DOWNSTREAM');
-          out+=`<g aria-hidden="true" opacity="${up?1:.52}">
-            <rect x="${x-w/2+4}" y="${y-h/2+5}" width="${w}" height="${h}" fill="#51654e"/>
-            <rect x="${x-w/2}" y="${y-h/2}" width="${w}" height="${h}" rx="2" fill="${up?(id==='G'?'#9ce7ee':'#e5b956'):'#a7a7a7'}" stroke="#17263d" stroke-width="4"/>
-            <path d="M${x-13} ${y-h/2} v-13 M${x+13} ${y-h/2} v-13" stroke="#17263d" stroke-width="4"/>
-            <circle cx="${x-12}" cy="${y-2}" r="3" fill="#17263d"/><circle cx="${x}" cy="${y-2}" r="3" fill="#17263d"/><circle cx="${x+12}" cy="${y-2}" r="3" fill="#17263d"/>
-            <rect x="${x-w/2-9}" y="${y+h/2+5}" width="${w+18}" height="${mobile?34:38}" rx="2" fill="#fffdf1" stroke="#25364d" stroke-width="2"/>
-            <text x="${x}" y="${y+h/2+20}" text-anchor="middle" font-size="12" font-weight="900" fill="#17263d">${title}</text>
-            <text x="${x}" y="${y+h/2+33}" text-anchor="middle" font-size="${mobile?10:9}" font-weight="800" fill="${up?'#245d3b':'#7b2525'}">${up?role:'SEM SINAL'}</text>
-          </g>`;
+        const [gx,gy]=positions.G,[xx,xy]=positions.X;
+        map.append(svg('line',{x1:gx,y1:gy+43,x2:xx,y2:xy-30,class:`external-edge${externalLink?'':' down'}${externalHighlight?' route':''}`}));
+        map.append(svg('text',{x:gx,y:(gy+xy)/2,'text-anchor':'middle',class:'edge-caption'},'saída externa'));
+        for(const id of pcs) {
+          const [x,y]=positions[id], up=computers[id];
+          const group=svg('g',{class:`node pc-node${up?'':' down'}${routeNodes.includes(id)?' route':''}`});
+          group.append(svg('circle',{cx:x,cy:y,r:35}));
+          group.append(svg('text',{x,y:y-2,'text-anchor':'middle',class:'node-name'},pcLabels[id]));
+          group.append(svg('text',{x,y:y+15,'text-anchor':'middle',class:'node-state'},up?'ATIVO':'FALHA'));
+          map.append(group);
         }
-        for(const id of ['T1','T2','T3','T4']) {
-          const [x,y]=positions[id], up=computers[id], w=pcSize+10, h=pcSize;
-          out+=`<g aria-hidden="true" opacity="${up?1:.52}">
-            <rect x="${x-w/2+3}" y="${y-h/2+4}" width="${w}" height="${h}" fill="#51654e"/>
-            <rect x="${x-w/2}" y="${y-h/2}" width="${w}" height="${h-7}" rx="2" fill="${up?'#718da5':'#aaa'}" stroke="#17263d" stroke-width="4"/>
-            <rect x="${x-w/2+7}" y="${y-h/2+6}" width="${w-14}" height="${h-20}" fill="#9ce7ee" stroke="#17263d" stroke-width="2"/>
-            <path d="M${x} ${y+h/2-9} v8 M${x-13} ${y+h/2} h26" stroke="#17263d" stroke-width="4"/>
-            <text x="${x}" y="${y+h/2+19}" text-anchor="middle" font-size="12" font-weight="900" fill="#17263d">${nodeInfo[id].name}</text>
-            <text x="${x}" y="${y+h/2+32}" text-anchor="middle" font-size="${mobile?10:9}" font-weight="800" fill="${!up?'#7b2525':routeBetween('G',id)?'#245d3b':'#7b2525'}">${!up?'COM FALHA':routeBetween('G',id)?'COM ROTA':'SEM ACESSO'}</text>
-          </g>`;
-        }
-        if(inFlight && !reducedMotion) {
-          const dot=svg.querySelector('#movingPacket');
-          if(dot) out+=dot.outerHTML;
-        }
-        svg.innerHTML=`<title id="mapTitle">Mapa de conexões da rede</title><desc id="mapDescription"></desc>${out}`;
-        updateMapDescription();
+        const gatewayGroup=svg('g',{class:`node gateway-node${gateway?'':' down'}${externalHighlight?' route':''}`});
+        gatewayGroup.append(svg('circle',{cx:gx,cy:gy,r:43}));
+        gatewayGroup.append(svg('text',{x:gx,y:gy-3,'text-anchor':'middle',class:'node-name'},'GATEWAY'));
+        gatewayGroup.append(svg('text',{x:gx,y:gy+15,'text-anchor':'middle',class:'node-state'},gateway?'ATIVO':'FALHA'));
+        map.append(gatewayGroup);
+        const internetGroup=svg('g',{class:`node internet-node${externalLink?'':' down'}${externalHighlight?' route':''}`});
+        internetGroup.append(svg('rect',{x:xx-42,y:xy-30,width:84,height:60,rx:4}));
+        internetGroup.append(svg('text',{x:xx,y:xy-2,'text-anchor':'middle',class:'node-name'},'INTERNET'));
+        internetGroup.append(svg('text',{x:xx,y:xy+15,'text-anchor':'middle',class:'node-state'},externalLink?'ATIVA':'FALHA'));
+        map.append(internetGroup);
       }
-      function buildControls() {
-        $('routerControls').innerHTML=['G','A','B'].map(id=>`<button type="button" data-kind="router" data-id="${id}"></button>`).join('');
-        $('linkControls').innerHTML=Object.entries(edgeInfo).map(([id,e])=>`<button type="button" data-kind="link" data-id="${id}"></button>`).join('');
-        $('computerControls').innerHTML=['T1','T2','T3','T4'].map(id=>`<button type="button" data-kind="computer" data-id="${id}"></button>`).join('');
-        $('sendButtons').innerHTML=['T1','T2','T3','T4'].map(id=>`<button type="button" data-send="${id}">Enviar para ${nodeInfo[id].name}</button>`).join('')+'<button type="button" class="batch" id="batchButton">Enviar pacote para todos os computadores</button>';
-        updateControls();
+      function log(message,type='info') {
+        const row=document.createElement('p');row.className=type;row.textContent=message;
+        $('log').prepend(row);
+        $('liveStatus').textContent=message;
       }
-      function updateControls() {
-        document.querySelectorAll('[data-kind="router"]').forEach(btn=>{
-          const id=btn.dataset.id, up=routers[id], name=id==='G'?'gateway':`roteador ${id==='A'?'R1':'R2'}`;
-          btn.textContent=`${up?'Falhar':'Recuperar'} ${name}`;
-          btn.setAttribute('aria-pressed',String(!up)); btn.classList.toggle('is-down',!up); btn.classList.toggle('is-up',up);
+      function updateHud(){$('hudStep').textContent=`${Math.min(current+1,4)}/4`;$('hudTests').textContent=String(tests)}
+      function updateProgress() {
+        const count=done.filter(Boolean).length;
+        $('railProgress').textContent=`${count} de 4 etapas concluídas`;
+        $('progressBar').setAttribute('aria-valuenow',String(count));
+        $('progressFill').style.width=`${count*25}%`;
+        document.querySelectorAll('.mission-chip').forEach((el,i)=>{
+          el.classList.toggle('active',i===current);
+          el.classList.toggle('done',done[i]);
+          el.setAttribute('aria-current',i===current?'step':'false');
         });
-        document.querySelectorAll('[data-kind="computer"]').forEach(btn=>{
-          const id=btn.dataset.id, up=computers[id];
-          btn.textContent=`${up?'Falhar':'Recuperar'} computador ${id.slice(1)}`;
-          btn.setAttribute('aria-pressed',String(!up)); btn.classList.toggle('is-down',!up); btn.classList.toggle('is-up',up);
+        updateHud();
+      }
+      function renderMissions() {
+        const list=$('missionList');list.replaceChildren();
+        missions.forEach((m,i)=>{
+          const item=document.createElement('div');item.className='mission-chip';
+          item.innerHTML=`<span class="n">${String(i+1).padStart(2,'0')}</span><span><strong></strong><small>${m.tag}</small></span>`;
+          item.querySelector('strong').textContent=m.title;list.append(item);
         });
-        document.querySelectorAll('[data-kind="link"]').forEach(btn=>{
-          const id=btn.dataset.id, up=links[id];
-          btn.textContent=`${up?'Interromper':'Restaurar'} ${edgeInfo[id].label}`;
-          btn.setAttribute('aria-pressed',String(!up)); btn.classList.toggle('is-down',!up); btn.classList.toggle('is-up',up);
-        });
       }
-      function renderMission() {
-        const m=missions[current];
-        $('missionEyebrow').textContent=`${m.tag} • ETAPA ${current+1} DE 4`;
-        $('missionTitle').textContent=m.title; $('missionDesc').textContent=m.desc;
-        $('objectiveText').textContent=m.objective;
-        $('phaseTag').textContent=done[current]?'CONCLUÍDA':'EM ANDAMENTO';
-        $('learningStrip').innerHTML=m.clues.map(([title,text])=>`<div class="learn-cell"><strong>${title}</strong>${text}</div>`).join('');
-        $('missionList').innerHTML=missions.map((item,i)=>`<div class="mission-chip ${i===current?'active':''} ${done[i]?'done':''}" ${i===current?'aria-current="step"':''}><span class="n">${done[i]?'✓':i+1}</span><span><strong>${item.title}</strong><small>${done[i]?'Quiz concluído':i===current?'Missão atual':'Etapa bloqueada'}</small></span></div>`).join('');
-        $('railProgress').textContent=`${done.filter(Boolean).length} de 4 etapas concluídas`;
-        $('progressBar').setAttribute('aria-valuenow',String(done.filter(Boolean).length));
-        $('progressFill').style.width=`${done.filter(Boolean).length*25}%`;
-        $('hudStep').textContent=`${done.filter(Boolean).length}/4`;
-        $('hudRoutes').textContent=String(routesTested);
-        $('quiz').hidden=true; $('complete').hidden=true;
-        actionFlags={}; delivered=new Set(); lastRoute=[];
-        updateStatus(); renderMap();
+      function renderControls() {
+        const pcBox=$('computerControls');pcBox.replaceChildren();
+        for(const pc of pcs) {
+          const button=document.createElement('button');button.type='button';button.className=computers[pc]?'':'is-down';
+          button.setAttribute('aria-pressed',String(!computers[pc]));
+          button.textContent=`${pcLabels[pc]}: ${computers[pc]?'ativo':'falha'}`;
+          button.addEventListener('click',()=>{computers[pc]=!computers[pc];if(current===3&&pc==='PC3'&&computers[pc])flags.pc3Restored=true;log(`${pcLabels[pc]} ${computers[pc]?'restaurado':'desativado'}.`,computers[pc]?'ok':'warn');renderAll();checkObjective()});
+          pcBox.append(button);
+        }
+        const linkBox=$('linkControls');linkBox.replaceChildren();
+        for(const id of edgeIds) {
+          const b=document.createElement('button');b.type='button';b.className=links[id]?'':'is-down';
+          b.setAttribute('aria-pressed',String(!links[id]));
+          b.innerHTML=`<span>${edges[id].label}</span><span class="state" aria-hidden="true">${links[id]?'●':'×'}</span>`;
+          b.setAttribute('aria-label',`${edges[id].label}: ${links[id]?'ativo':'falha'}. Ativar/desativar`);
+          b.addEventListener('click',()=>{links[id]=!links[id];if(current===3&&id===pairId('PC1','PC2')&&links[id])flags.linkRestored=true;log(`${edges[id].label} ${links[id]?'restabelecido':'interrompido'}.`,links[id]?'ok':'warn');renderAll();checkObjective()});
+          linkBox.append(b);
+        }
+        const gatewayBox=$('gatewayControls');gatewayBox.replaceChildren();
+        for(const [key,label] of [['gateway','Gateway'],['externalLink','Enlace externo']]) {
+          const value=key==='gateway'?gateway:externalLink;
+          const b=document.createElement('button');b.type='button';b.className=value?'':'is-down';
+          b.setAttribute('aria-pressed',String(!value));b.textContent=`${label}: ${value?'ativo':'falha'}`;
+          b.addEventListener('click',()=>{if(key==='gateway')gateway=!gateway;else externalLink=!externalLink;log(`${label} ${key==='gateway'?(gateway?'restaurado':'desativado'):(externalLink?'restabelecido':'interrompido')}.`,(key==='gateway'?gateway:externalLink)?'ok':'warn');renderAll();checkObjective()});
+          gatewayBox.append(b);
+        }
       }
-      function start() {
-        $('intro').hidden=true; $('game').classList.add('started');
-        buildControls(); renderMission(); $('missionTitle').focus();
-        log('Laboratório aberto. Faça os testes descritos no objetivo.','good');
+      function renderAll(){renderMap();renderControls()}
+      function clearRoute(){routeLinks=[];routeNodes=[];externalHighlight=false;renderMap()}
+      function markRoute(path) {
+        routeNodes=path||[];routeLinks=[];
+        if(path) for(let i=0;i<path.length-1;i++) routeLinks.push(pairId(path[i],path[i+1]));
+        externalHighlight=false;renderMap();
       }
-      function updateStatus() {
-        const n=delivered.size;
-        $('objectiveStatus').textContent=current===0?`${n}/4 computadores receberam dados`:
-          current===1?`${actionFlags.alt1?'Rota alternativa confirmada':'Rota alternativa pendente'}${actionFlags.otherBranch?' • outra ramificação testada':''}`:
-          current===2?`${actionFlags.triedT1&&actionFlags.triedT2?'Clientes de R1 testados':'Teste os dois clientes de R1'}${actionFlags.otherBranch?' • R2 segue ativa':''}`:
-          `${actionFlags.repairedLink&&actionFlags.repairedRouter?'R1 e Central ↔ R1 restaurados':'Restaure R1 e Central ↔ R1'}${actionFlags.failedEndpoint?' • falha local testada':''}${actionFlags.recoveredPc?' • PC 4 recuperado':''}`;
-        $('phaseTag').textContent=done[current]?'QUIZ RESPONDIDO':'EM ANDAMENTO';
+      function animatePacket(path) {
+        if(reducedMotion||path.length<2)return;
+        const points=path.map(id=>positions[id]),segments=[];
+        let total=0;
+        for(let i=1;i<points.length;i++){const length=Math.hypot(points[i][0]-points[i-1][0],points[i][1]-points[i-1][1]);segments.push(length);total+=length}
+        const packet=svg('rect',{x:points[0][0]-8,y:points[0][1]-8,width:16,height:16,rx:1,fill:'#fff36b',stroke:'#17263d','stroke-width':3,class:'data-packet'});
+        $('network').append(packet);
+        const start=performance.now(),duration=Math.max(450,total*2.2);
+        const tick=now=>{
+          if(reducedMotion){packet.remove();return}
+          const progress=Math.min(1,(now-start)/duration);let distance=progress*total,index=0;
+          while(index<segments.length-1&&distance>segments[index]){distance-=segments[index];index++}
+          const a=points[index],b=points[index+1],ratio=segments[index]?distance/segments[index]:1;
+          packet.setAttribute('x',String(a[0]+(b[0]-a[0])*ratio-8));
+          packet.setAttribute('y',String(a[1]+(b[1]-a[1])*ratio-8));
+          if(progress<1)requestAnimationFrame(tick);else packet.remove();
+        };
+        requestAnimationFrame(tick);
       }
-      function isRouterAccessReady(pc) {
-        const home=pc==='T1'||pc==='T2'?'A':'B';
-        return routers[home] && routers.G;
+      function testPair() {
+        const from=$('sourceSelect').value,to=$('targetSelect').value;
+        if(from===to){$('objectiveStatus').textContent='Escolha dois PCs diferentes.';$('liveStatus').textContent='Escolha computadores diferentes.';return}
+        tests++;const path=routeBetween(from,to);
+        if(path){markRoute(path);animatePacket(path);log(`ENTREGUE: ${pcLabels[from]} → ${pcLabels[to]} pelo caminho ${path.map(p=>pcLabels[p]).join(' → ')}.`, 'ok');$('objectiveStatus').textContent=`Entregue em ${path.length-1} salto(s).`}
+        else {markRoute(null);log(`SEM ROTA: ${pcLabels[from]} → ${pcLabels[to]}. Verifique endpoints, nós intermediários e enlaces.`, 'fail');$('objectiveStatus').textContent='Falha: não há caminho ativo.'}
+        $('liveStatus').textContent=path?`Pacote entregue. Caminho: ${path.map(p=>pcLabels[p]).join(' para ')}.`:'Sem rota ativa para o destino.';
+        recordPairTest(from,to,path);updateHud();checkObjective();
+      }
+      function testExternal() {
+        tests++;const success=gateway&&externalLink;routeLinks=[];routeNodes=[];externalHighlight=success;renderMap();
+        if(success){log('SAÍDA EXTERNA ATIVA: gateway → enlace externo → internet.','ok');$('objectiveStatus').textContent='Saída externa disponível.'}
+        else {log(`SAÍDA EXTERNA INDISPONÍVEL: ${!gateway?'gateway em falha.':'enlace externo interrompido.'}`,'fail');$('objectiveStatus').textContent='Falha na saída externa.'}
+        $('liveStatus').textContent=success?'Saída externa disponível.':'Saída externa indisponível.';
+        flags.externalTests=(flags.externalTests||[]).concat(success);
+        if(current===3&&!gateway&&!success)flags.gatewayFailureTest=true;
+        if(current===3&&gateway&&externalLink&&success)flags.gatewayRestoredTest=true;
+        updateHud();checkObjective();
+      }
+      function recordPairTest(from,to,path) {
+        const id=pairId(from,to), success=Boolean(path);
+        if(current===0&&success){flags.baseline=flags.baseline||new Set();flags.baseline.add(id)}
+        if(current===1&&id===pairId('PC1','PC2')&&!links[id]&&success&&path.length>2)flags.detour=true;
+        if(current===2&&computers.PC3===false) {
+          if(id===pairId('PC1','PC3')&&!success)flags.pc3Blocked=true;
+          if(id===pairId('PC1','PC2')&&success)flags.peerSurvives=true;
+        }
+        if(current===3) {
+          if(id===pairId('PC1','PC2')&&success&&!gateway)flags.peerWithoutGateway=true;
+        }
+      }
+      function missionReady() {
+        if(current===0)return Boolean(flags.baseline&&flags.baseline.size>=2);
+        if(current===1)return Boolean(flags.detour);
+        if(current===2)return Boolean(flags.pc3Blocked&&flags.peerSurvives);
+        return Boolean(flags.pc3Restored&&flags.linkRestored&&flags.gatewayFailureTest&&flags.peerWithoutGateway&&flags.gatewayRestoredTest);
       }
       function checkObjective() {
-        let pass=false;
-        if(current===0) pass=delivered.size===4;
-        if(current===1) pass=actionFlags.alt1&&actionFlags.otherBranch;
-        if(current===2) pass=actionFlags.triedT1&&actionFlags.triedT2&&actionFlags.otherBranch&& !routers.A;
-        if(current===3) pass=actionFlags.repairedLink&&actionFlags.repairedRouter&&actionFlags.failedEndpoint&&actionFlags.otherBranch&&actionFlags.recoveredPc&&actionFlags.finalSend;
-        if(pass && $('quiz').hidden) showQuiz();
+        if(!missions[current])return;
+        const ready=missionReady();
+        $('objectiveStatus').textContent=ready?'Objetivo cumprido. Responda à pergunta para avançar.':$('objectiveStatus').textContent;
+        if(ready&&!answered)showQuiz();
       }
-      function drawPacket(route) {
-        const svg=$('network'), points=route.map(id=>positions[id]), packet=document.createElementNS(svgNS,'rect');
-        packet.setAttribute('id','movingPacket'); packet.setAttribute('x',String(points[0][0]-8)); packet.setAttribute('y',String(points[0][1]-8));
-        packet.setAttribute('width','16'); packet.setAttribute('height','16'); packet.setAttribute('rx','1'); packet.setAttribute('fill','#fff36b'); packet.setAttribute('stroke','#17263d'); packet.setAttribute('stroke-width','4');
-        svg.appendChild(packet);
-        const lengths=[]; let total=0;
-        for(let i=1;i<points.length;i++){const len=Math.hypot(points[i][0]-points[i-1][0],points[i][1]-points[i-1][1]);lengths.push(len);total+=len}
-        const start=performance.now(), duration=Math.min(1550,Math.max(500,total*1.35));
-        return new Promise(resolve=>{
-          const tick=now=>{
-            const progress=Math.min(1,(now-start)/duration), dist=progress*total; let remaining=dist, seg=0;
-            while(seg<lengths.length-1&&remaining>lengths[seg]){remaining-=lengths[seg];seg++}
-            const a=points[seg],b=points[seg+1],t=lengths[seg]?Math.min(1,remaining/lengths[seg]):1;
-            packet.setAttribute('x',String(a[0]+(b[0]-a[0])*t-8)); packet.setAttribute('y',String(a[1]+(b[1]-a[1])*t-8));
-            if(progress<1) requestAnimationFrame(tick); else { packet.remove(); resolve(); }
-          };
-          requestAnimationFrame(tick);
-        });
-      }
-      async function send(pc) {
-        if(inFlight) { log('Aguarde a transmissão atual terminar.','info'); return false; }
-        if(!computers[pc]) { log(`${nodeInfo[pc].name} está avariado: o próprio destino não pode receber.`, 'bad'); if(current===3&&pc==='T4') actionFlags.failedEndpoint=true; updateStatus();checkObjective();return false; }
-        const route=routeBetween('G',pc);
-        if(!route) {
-          const side=pc==='T1'||pc==='T2'?'R1':'R2';
-          const reason=!routers.G?'A gateway falhou. Nenhum destino tem saída pela origem simulada.':!routers[side]?`O roteador ${side} falhou; os computadores ligados a ele perderam acesso.`:'Não há uma sequência contínua de enlaces ativos até o destino.';
-          log(`Sem entrega para ${nodeInfo[pc].name}. ${reason}`,'bad');
-          if(current===2&&pc==='T1') actionFlags.triedT1=true;
-          if(current===2&&pc==='T2') actionFlags.triedT2=true;
-          if(current===3&&pc==='T4') actionFlags.failedEndpoint=true;
-          updateStatus();checkObjective();return false;
-        }
-        const routeEdges=route.slice(1).map((id,i)=>edgeFor(route[i],id));
-        inFlight=true; updateControls();
-        const routeNames=route.map(id=>nodeInfo[id].name).join(' → ');
-        if(!reducedMotion) await drawPacket(route);
-        else await new Promise(resolve=>setTimeout(resolve,30));
-        inFlight=false;
-        if(route.some(id=>nodeInfo[id].type==='router'&&!routers[id])||route.some((id,i)=>i>0&&!links[edgeFor(route[i-1],id)])||!computers[pc]) {
-          log(`Transmissão interrompida a caminho de ${nodeInfo[pc].name}: um componente falhou durante o percurso.`,'bad');
-          renderMap();updateControls();return false;
-        }
-        delivered.add(pc); lastRoute=routeEdges; routesTested++; $('hudRoutes').textContent=String(routesTested);
-        log(`Pacote entregue a ${nodeInfo[pc].name}. Caminho: ${routeNames}.`,'good');
-        if(current===1&&pc==='T1'&&!links.ga) actionFlags.alt1=route.includes('B')&&route.includes('A');
-        if(current===1&&pc==='T3') actionFlags.otherBranch=true;
-        if(current===2&&pc==='T3') actionFlags.otherBranch=true;
-        if(current===3&&pc==='T3') actionFlags.otherBranch=true;
-        if(current===3&&pc==='T4'&&actionFlags.recoveredPc) actionFlags.finalSend=true;
-        renderMap();updateStatus();checkObjective();return true;
-      }
-      async function sendBatch() {
-        if(inFlight) return;
-        $('batchButton').disabled=true;
-        for(const pc of ['T1','T2','T3','T4']) await send(pc);
-        $('batchButton').disabled=false;
-      }
-      function setComponent(kind,id) {
-        if(inFlight) return;
-        if(kind==='router') {
-          const was=routers[id]; routers[id]=!was;
-          if(current===3&&id==='A'&&was&&!routers[id]) actionFlags.repairedRouter=false;
-          if(current===3&&id==='A'&&!was&&routers[id]) actionFlags.repairedRouter=true;
-          log(`${id==='G'?'Gateway':'Roteador '+(id==='A'?'R1':'R2')} ${routers[id]?'recuperado':'com falha'}. ${id==='A'&&!routers[id]?'PC 1 e PC 2 perdem acesso enquanto R1 estiver avariado.':''}`,routers[id]?'good':'bad');
-        } else if(kind==='computer') {
-          const was=computers[id]; computers[id]=!was;
-          if(current===3&&id==='T4'&&was&&!computers[id]) {actionFlags.failedEndpoint=false;actionFlags.finalSend=false;}
-          if(current===3&&id==='T4'&&!was&&computers[id]) actionFlags.recoveredPc=true;
-          log(`${nodeInfo[id].name} ${computers[id]?'recuperado':'com falha'}${!computers[id]?'. A falha afeta este computador, não o outro destino.':'.'}`,computers[id]?'good':'bad');
-        } else {
-          const was=links[id]; links[id]=!was;
-          if(current===3&&id==='ga'&&!was&&links[id]) actionFlags.repairedLink=true;
-          if(current===3&&id==='ga'&&was&&!links[id]) actionFlags.repairedLink=false;
-          log(`Enlace ${edgeInfo[id].label} ${links[id]?'restaurado':'interrompido'}.`,links[id]?'good':'bad');
-        }
-        renderMap();updateControls();updateStatus();checkObjective();
+      function renderMission() {
+        const m=missions[current];if(!m)return;
+        $('missionEyebrow').textContent=m.tag;$('missionTitle').textContent=m.title;$('missionDesc').textContent=m.desc;$('objectiveText').textContent=m.objective;
+        $('phaseTag').textContent=done[current]?'CONCLUÍDA':'EM ANDAMENTO';
+        const strip=$('learningStrip');strip.replaceChildren();
+        m.clues.forEach(([head,body])=>{const cell=document.createElement('div');cell.className='learn-cell';const strong=document.createElement('strong');strong.textContent=head;cell.append(strong,document.createTextNode(body));strip.append(cell)});
+        $('quiz').hidden=true;$('complete').hidden=true;$('objectiveStatus').textContent='Aguardando ação';answered=false;flags={};updateProgress();
       }
       function showQuiz() {
-        $('quiz').hidden=false; $('quizKicker').textContent=`PAUSA PARA PENSAR • QUIZ ${current+1} DE 4`;
-        $('quizQuestion').textContent=quizzes[current].question; $('quizFeedback').textContent='';
-        $('continueButton').style.display='none'; answered=false;
-        $('quizOptions').innerHTML=quizzes[current].answers.map((answer,i)=>`<button type="button" data-answer="${i}">${String.fromCharCode(65+i)}. ${answer}</button>`).join('');
-        $('quizQuestion').focus(); $('quiz').scrollIntoView({behavior:reducedMotion?'auto':'smooth',block:'nearest'});
-      }
-      function answerQuiz(index,button) {
         if(answered)return;
-        answered=true;
-        const q=quizzes[current], correct=index===q.correct;
-        document.querySelectorAll('#quizOptions button').forEach(btn=>{btn.disabled=true; if(Number(btn.dataset.answer)===q.correct)btn.classList.add('correct');});
-        if(!correct) button.classList.add('wrong');
-        $('quizFeedback').textContent=correct?q.why:`Não é essa. ${q.why}`;
-        if(correct) {
-          done[current]=true; updateStatus();renderMissionListOnly();
-          $('continueButton').style.display='inline-block';
-          log(`Quiz ${current+1} respondido corretamente. ${q.why}`,'good');
-        } else {
-          answered=false;
-          const retry=document.createElement('button'); retry.type='button'; retry.textContent='Tentar outra vez'; retry.className='continue'; retry.style.display='inline-block'; retry.id='retryButton';
-          $('quizFeedback').after(retry); retry.addEventListener('click',()=>{retry.remove();$('quizFeedback').textContent='';document.querySelectorAll('#quizOptions button').forEach(btn=>{btn.disabled=false;btn.classList.remove('correct','wrong')});});
-          log(`Quiz ${current+1}: resposta para revisar. Leia o feedback e tente novamente.`,'info');
-        }
-      }
-      function renderMissionListOnly() {
-        $('missionList').innerHTML=missions.map((item,i)=>`<div class="mission-chip ${i===current?'active':''} ${done[i]?'done':''}" ${i===current?'aria-current="step"':''}><span class="n">${done[i]?'✓':i+1}</span><span><strong>${item.title}</strong><small>${done[i]?'Quiz concluído':i===current?'Missão atual':'Etapa bloqueada'}</small></span></div>`).join('');
-        $('railProgress').textContent=`${done.filter(Boolean).length} de 4 etapas concluídas`;
-        $('progressBar').setAttribute('aria-valuenow',String(done.filter(Boolean).length));
-        $('progressFill').style.width=`${done.filter(Boolean).length*25}%`;
-        $('hudStep').textContent=`${done.filter(Boolean).length}/4`;
+        answered=true;const q=quizzes[current];$('quizQuestion').textContent=q.question;$('quizFeedback').textContent='';
+        $('continueButton').hidden=true;
+        const options=$('quizOptions');options.replaceChildren();
+        q.answers.forEach((answer,i)=>{
+          const b=document.createElement('button');b.type='button';b.textContent=answer;
+          b.addEventListener('click',()=>{
+            if(options.dataset.locked==='true')return;
+            if(i===q.correct){options.dataset.locked='true';b.classList.add('correct');$('quizFeedback').textContent=q.why;$('continueButton').hidden=false;done[current]=true;$('phaseTag').textContent='ETAPA CONCLUÍDA';updateProgress()}
+            else{$('quizFeedback').textContent='Ainda não. Use as evidências do mapa e tente novamente.';b.classList.add('incorrect');setTimeout(()=>b.classList.remove('incorrect'),500)}
+          });
+          options.append(b);
+        });
+        options.dataset.locked='false';        $('quiz').hidden=false;$('quizQuestion').focus();$('quiz').scrollIntoView({behavior:reducedMotion?'auto':'smooth',block:'nearest'});
       }
       function advance() {
-        if(current<3) {current++;renderMission();$('missionTitle').focus();log(`Etapa ${current+1}: ${missions[current].title}.`,'info');}
-        else { $('quiz').hidden=true;$('complete').hidden=false;$('finalOptions').innerHTML=['estrela','barramento','anel','árvore','malha'].map(option=>`<button type="button" data-final="${option}">${option}</button>`).join('');$('completeTitle').focus?.();$('complete').scrollIntoView({behavior:reducedMotion?'auto':'smooth',block:'start'}); }
+        if(current<missions.length-1){current++;renderMission();renderAll();$('missionTitle').focus();$('workbench').scrollIntoView({behavior:reducedMotion?'auto':'smooth',block:'start'})}
+        else { $('quiz').hidden=true;$('complete').hidden=false;$('completeTitle').focus();$('complete').scrollIntoView({behavior:reducedMotion?'auto':'smooth',block:'start'}) }
       }
-      function chooseFinal(option,button) {
-        if(finalRevealed)return; finalRevealed=true;
-        document.querySelectorAll('#finalOptions button').forEach(btn=>{btn.disabled=true;if(btn.dataset.final==='malha')btn.classList.add('correct')});
-        if(option!=='malha')button.classList.add('wrong');
-        $('finalAnswer').style.display='block';
-        $('finalAnswer').innerHTML='<h3>A resposta é topologia em malha.</h3><p>Você encontrou enlaces redundantes entre roteadores: com o enlace Central–R1 interrompido, o tráfego pôde passar por R2. Mas a redundância não elimina todos os pontos de falha: quando R1 falha, PC 1 e PC 2 perdem acesso, enquanto a ramificação de R2 pode continuar. Mais caminhos trazem disponibilidade potencial e também mais custo, configuração e monitoramento.</p>';
-        $('finalAnswer').focus();
-        log(`Desafio final respondido: ${option}. A investigação revelou a topologia em malha.`,'good');
+      function initSelectors() {
+        for(const id of ['sourceSelect','targetSelect']) {
+          const select=$(id);select.replaceChildren();
+          pcs.forEach(pc=>{const option=document.createElement('option');option.value=pc;option.textContent=pcLabels[pc];select.append(option)});
+        }
+        $('sourceSelect').value='PC1';$('targetSelect').value='PC2';
       }
-      function replay() {
-        current=0;routesTested=0;done=[false,false,false,false];finalRevealed=false;routers={G:true,A:true,B:true};computers={T1:true,T2:true,T3:true,T4:true};links=Object.fromEntries(Object.keys(edgeInfo).map(id=>[id,true]));delivered=new Set();lastRoute=[];actionFlags={};
-        $('complete').hidden=true;$('quiz').hidden=true;$('finalAnswer').style.display='none';$('log').replaceChildren();renderMission();updateControls();log('Investigação reiniciada. Todos os equipamentos estão ativos.','info');$('missionTitle').focus();
+      function reset() {
+        computers=Object.fromEntries(pcs.map(pc=>[pc,true]));
+        links=Object.fromEntries(edgeIds.map(id=>[id,true]));
+        gateway=true;externalLink=true;current=0;tests=0;answered=false;routeLinks=[];routeNodes=[];externalHighlight=false;
+        flags={};done=[false,false,false,false];finalRevealed=false;
+        $('log').replaceChildren();log('Pronto. Inicie os testes da etapa atual.');$('finalAnswer').textContent='';
+        $('quizOptions').dataset.locked='false';$('intro').hidden=false;$('game').classList.remove('started');$('complete').hidden=true;$('quiz').hidden=true;$('finalOptions').querySelectorAll('button').forEach(button=>{button.disabled=false;button.classList.remove('correct','incorrect')});
+        initSelectors();renderMissions();renderMission();renderAll();updateProgress();
       }
-      $('startButton').addEventListener('click',start);
-      $('routerControls').addEventListener('click',e=>{const b=e.target.closest('[data-kind]');if(b)setComponent('router',b.dataset.id)});
-      $('computerControls').addEventListener('click',e=>{const b=e.target.closest('[data-kind]');if(b)setComponent('computer',b.dataset.id)});
-      $('linkControls').addEventListener('click',e=>{const b=e.target.closest('[data-kind]');if(b)setComponent('link',b.dataset.id)});
-      $('sendButtons').addEventListener('click',e=>{const b=e.target.closest('[data-send]');if(b)send(b.dataset.send);});
-      $('sendButtons').addEventListener('click',e=>{if(e.target.id==='batchButton')sendBatch();});
-      $('quizOptions').addEventListener('click',e=>{const b=e.target.closest('[data-answer]');if(b)answerQuiz(Number(b.dataset.answer),b);});
+      $('startButton').addEventListener('click',()=>{$('intro').hidden=true;$('game').classList.add('started');renderMission();renderAll();$('missionTitle').focus()});
+      $('sendPairButton').addEventListener('click',testPair);
+      $('sendExternalButton').addEventListener('click',testExternal);
       $('continueButton').addEventListener('click',advance);
-      $('finalOptions').addEventListener('click',e=>{const b=e.target.closest('[data-final]');if(b)chooseFinal(b.dataset.final,b);});
-      $('replayButton').addEventListener('click',replay);
-      $('fontButton').addEventListener('click',()=>{const on=!document.documentElement.classList.contains('large-text');document.documentElement.classList.toggle('large-text',on);$('fontButton').setAttribute('aria-pressed',String(on));});
-      $('contrastButton').addEventListener('click',()=>{const on=!document.body.classList.contains('high-contrast');document.body.classList.toggle('high-contrast',on);$('contrastButton').setAttribute('aria-pressed',String(on));});
-      $('motionButton').addEventListener('click',()=>{reducedMotion=!reducedMotion;document.documentElement.classList.toggle('motion-reduced',reducedMotion);$('motionButton').setAttribute('aria-pressed',String(reducedMotion));$('motionButton').textContent=reducedMotion?'Movimento reduzido: sim':'Reduzir movimento';});
-      window.addEventListener('resize',()=>{if(!$('game').classList.contains('started'))return;renderMap();});
-      $('motionButton').setAttribute('aria-pressed',String(reducedMotion));
-      document.documentElement.classList.toggle('motion-reduced',reducedMotion);
-      if(reducedMotion) $('motionButton').textContent='Movimento reduzido: sim';
-      renderMap(); buildControls();
+      $('replayButton').addEventListener('click',reset);
+      $('fontButton').addEventListener('click',e=>{const on=document.documentElement.classList.toggle('large-text');e.currentTarget.setAttribute('aria-pressed',String(on))});
+      $('contrastButton').addEventListener('click',e=>{const on=document.body.classList.toggle('high-contrast');e.currentTarget.setAttribute('aria-pressed',String(on))});
+      $('motionButton').addEventListener('click',e=>{reducedMotion=!reducedMotion;document.documentElement.classList.toggle('motion-reduced',reducedMotion);e.currentTarget.setAttribute('aria-pressed',String(reducedMotion));e.currentTarget.textContent=reducedMotion?'Movimento reduzido: sim':'Reduzir movimento'});
+      if(reducedMotion){document.documentElement.classList.add('motion-reduced');$('motionButton').setAttribute('aria-pressed','true');$('motionButton').textContent='Movimento reduzido: sim'}
+      window.addEventListener('resize',()=>{if($('game').classList.contains('started'))renderMap()});
+      $('finalOptions').replaceChildren();
+      [['estrela',false],['barramento',false],['anel',false],['árvore',false],['malha',true]].forEach(([answer,correct])=>{
+        const b=document.createElement('button');b.type='button';b.textContent=answer;
+        b.addEventListener('click',()=>{
+          if(finalRevealed)return;finalRevealed=true;
+          $('finalOptions').querySelectorAll('button').forEach(option=>{
+            option.disabled=true;
+            if(option.textContent==='malha')option.classList.add('correct');
+          });
+          b.classList.add(correct?'correct':'incorrect');
+          $('finalAnswer').innerHTML=correct
+            ?'<h3>Resposta correta!</h3><p>Os cinco PCs têm enlace direto entre todo par possível: 5 × 4 ÷ 2 = 10 enlaces. Há caminhos alternativos entre os pares. O gateway permanece fora dessas rotas e serve à saída externa. O desenho observado corresponde à topologia em malha completa.</p>'
+            :'<h3>Resposta incorreta. A resposta certa é malha.</h3><p>A figura não tem um centro de distribuição para os PCs nem um único circuito fechado. Conte os enlaces diretos: são dez, um para cada par. O desenho corresponde à topologia em malha completa.</p>';
+          $('finalAnswer').focus();
+        });$('finalOptions').append(b);
+      });
+      reset();
     })();
   </script>
 </body>
